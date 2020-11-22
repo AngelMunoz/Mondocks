@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.11.4" />
     <ProjectReference Include="..\..\src\Mondocks\Mondocks.fsproj" />
   </ItemGroup>
 
