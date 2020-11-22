@@ -371,7 +371,7 @@ module Queries =
 
         type InsertCommandBuilder() =
 
-            member __.Yield(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>) =
+            member __.Yield _ =
                 { insert = ""
                   documents = Seq.empty
                   ordered = None
@@ -427,7 +427,7 @@ module Queries =
 
         type UpdateCommandBuilder() =
 
-            member __.Yield(state: UpdateCommand<'WriteConcern, 'Comment>) =
+            member __.Yield _ =
                 { update = ""
                   updates = Seq.empty
                   ordered = None
