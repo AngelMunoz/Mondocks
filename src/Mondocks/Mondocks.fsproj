@@ -25,6 +25,7 @@
     <Compile Include="Library.fs" />
     <Compile Include="Types.fs" />
     <Compile Include="Database.fs" />
+    <Compile Include="Aggregation.fs" />
     <Compile Include="Query.fs" />
   </ItemGroup>
 
