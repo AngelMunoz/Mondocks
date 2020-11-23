@@ -9,7 +9,7 @@ module Database =
     [<AutoOpen>]
     module Administration =
 
-        type CreateIndexesCommand<'WriteConcern, 'CommitQuorum, 'Comment> =
+        type CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment> =
             { createIndexes: string
               indexes: seq<obj>
               writeConcern: Option<'WriteConcern>
@@ -186,32 +186,32 @@ module Database =
                   commitQuorum = None
                   comment = None }
 
-            member __.Run(state: CreateIndexesCommand<'WriteConcern, 'CommitQuorum, 'Comment>) =
+            member __.Run(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>) =
                 ({ state with
                        createIndexes = collection }
                 :> IBuilder)
                     .ToJSON()
 
             [<CustomOperation("indexes")>]
-            member __.Indexes(state: CreateIndexesCommand<'WriteConcern, 'CommitQuorum, 'Comment>,
-                              indexes: seq<obj>) =
-                { state with
-                      indexes = indexes }
+            member __.Indexes(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
+                              indexes: seq<'Index>) =
+                { state with indexes = indexes |> Seq.map box }
 
             [<CustomOperation("write_concern")>]
-            member __.WriteConcern(state: CreateIndexesCommand<'WriteConcern, 'CommitQuorum, 'Comment>,
+            member __.WriteConcern(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
                                    writeConcern: 'WriteConcern) =
                 { state with
                       writeConcern = Some writeConcern }
 
             [<CustomOperation("commit_quorum")>]
-            member __.CommitQuorum(state: CreateIndexesCommand<'WriteConcern, 'CommitQuorum, 'Comment>,
+            member __.CommitQuorum(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
                                    commitQuorum: 'CommitQuorum) =
                 { state with
                       commitQuorum = Some commitQuorum }
 
-            [<CustomOperation("commit_quorum")>]
-            member __.Comment(state: CreateIndexesCommand<'WriteConcern, 'CommitQuorum, 'Comment>, comment: 'Comment) =
+            [<CustomOperation("comment")>]
+            member __.Comment(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
+                              comment: 'Comment) =
                 { state with comment = Some comment }
 
 

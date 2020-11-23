@@ -6,18 +6,18 @@ open Mondocks.Types
 
 
 let indexCmd =
-    let indexlist = 
-        seq {
-            index "user_email_unique_idx" {
-                key (dict(["email", box 1.0]))
-                unique true
-            }
-            index "lastName_idx" {
-                key (dict(["lastName", box -1.0]))
-            }
-        } |> Seq.map box
+    let myindex = 
+        index "user_email_unique_idx" {
+            key (dict(["email", box 1.0]))
+            unique true
+        }
+    let myindex2 = 
+        index "lastName_idx" {
+            key (dict(["lastName", box -1.0]))
+        }
+        
     createIndexes "users" {
-        indexes indexlist
+        indexes [myindex; myindex2]
         comment {| message ="Some Comment" |}
     }
 
