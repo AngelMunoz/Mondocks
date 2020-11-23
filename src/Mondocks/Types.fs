@@ -1,6 +1,7 @@
 namespace Mondocks.Types
 
 open MongoDB.Bson.Serialization.Attributes
+open Mondocks
 
 type Collation =
     { locale: string
@@ -21,7 +22,6 @@ type DeleteQuery<'Delete, 'Hint, 'Comment> =
       hint: Option<'Hint>
       comment: Option<'Comment> }
 
-
 type UpdateQuery<'Query, 'Update, 'Hint> =
     { /// the matching criteria
       q: 'Query
@@ -34,8 +34,6 @@ type UpdateQuery<'Query, 'Update, 'Hint> =
       arrayFilters: Option<seq<obj>>
       hint: 'Hint }
 
-
-
 [<BsonIgnoreExtraElementsAttribute>]
 type Cursor<'T> = { firstBatch: seq<'T>; ns: string }
 
@@ -44,3 +42,10 @@ type FindResult<'T> = { cursor: Cursor<'T>; ok: float }
 type InsertResult = { n: int; ok: float }
 type UpdateResult = { n: int; nModified: int; ok: float }
 type DeleteResult = { n: int; ok: float }
+
+type CreateIndexResult =
+    { createdCollectionAutomatically: Option<bool>
+      note: Option<string>
+      numIndexesBefore: int
+      numIndexesAfter: int
+      ok: float }

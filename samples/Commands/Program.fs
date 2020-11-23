@@ -10,7 +10,7 @@ type User = { _id: ObjectId; name: string; age: int }
 let createUsers minAge maxAge = 
     let random  = Random()
     insert "users" {
-        documents 
+        documents
             [
                 // an anonymous object that does not include a null _id
                 {| name = "Peter"; age = random.Next(minAge, maxAge); |}
@@ -20,6 +20,7 @@ let createUsers minAge maxAge =
                 {| name = "Updateme"; age = 1; |}
                 {| name = "Deleteme"; age = 50; |}
             ]
+        comment {| message = "" |}
     }
 
 let updateUser (name: string) (newName: string) =
