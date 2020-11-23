@@ -1,5 +1,7 @@
 namespace Mondocks.Types
 
+open MongoDB.Bson.Serialization.Attributes
+
 type Collation =
     { locale: string
       caseLevel: Option<bool>
@@ -31,3 +33,14 @@ type UpdateQuery<'Query, 'Update, 'Hint> =
       /// An array of filter documents that determines which array elements to modify for an update operation on an array field.
       arrayFilters: Option<seq<obj>>
       hint: 'Hint }
+
+
+
+[<BsonIgnoreExtraElementsAttribute>]
+type Cursor<'T> = { firstBatch: seq<'T>; ns: string }
+
+type FindResult<'T> = { cursor: Cursor<'T>; ok: float }
+
+type InsertResult = { n: int; ok: float }
+type UpdateResult = { n: int; nModified: int; ok: float }
+type DeleteResult = { n: int; ok: float }
