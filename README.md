@@ -118,7 +118,18 @@ let main argv =
 Thanks for the early feedback in twitter from Isaac, Zaid, Alexey, Alexander, and the F# community
 you can follow it on the first [issue](https://github.com/AngelMunoz/Mondocks/issues/1)
 
-# WIP
+
+### Goals
+- Emit 100% compatible json with https://docs.mongodb.com/manual/reference/command/
+- Provide Types to ease the transition between command execution and it's return
+- Provide CE's to generate sub types of the main command definitions (e.g. index)
+
+### Non Eequired Extras
+- provide helpers to write different syntax (e.g. `filter (fun m -> m.prop = value)`, `filter ("prop" gt 10)`)
+
+### Non Goals
+- convert this into a document mapper
+- provide 100% of the mongo commands
 
 This is a work in progress, you can help providing feedback about it's usage
 
