@@ -52,7 +52,7 @@ module Queries =
             interface IBuilder with
                 member __.ToJSON() = Json.Serialize __
 
-        type FindBuilder() =
+        type FindBuilder(collection: string) =
 
             member __.Yield _ =
                 { find = ""
@@ -80,137 +80,132 @@ module Queries =
                   allowDiskUse = None }
 
             member __.Run(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>) =
-                (state :> IBuilder).ToJSON()
+                ({ state with find = collection } :> IBuilder).ToJSON()
 
-            [<CustomOperation("use_collection")>]
-            member __.UseCollection(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
-                                    name: string) =
-                { state with find = name }
-
-            [<CustomOperation("with_filter")>]
+            [<CustomOperation("filter")>]
             member __.WithFilter(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                  filter: 'Filter) =
                 { state with filter = Some filter }
 
-            [<CustomOperation("with_sort")>]
+            [<CustomOperation("sort")>]
             member __.WithSort(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                sort: 'Sort) =
                 { state with sort = Some sort }
 
-            [<CustomOperation("with_projection")>]
+            [<CustomOperation("projection")>]
             member __.WithProjection(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                      projection: 'Projection) =
                 { state with
                       projection = Some projection }
 
-            [<CustomOperation("with_hint")>]
+            [<CustomOperation("hint")>]
             member __.WithHint(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                hint: 'Hint) =
                 { state with hint = Some hint }
 
-            [<CustomOperation("with_skip")>]
+            [<CustomOperation("skip")>]
             member __.WithSkip(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                skip: int) =
                 { state with skip = Some skip }
 
-            [<CustomOperation("with_limit")>]
+            [<CustomOperation("limit")>]
             member __.WithLimit(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                 limit: int) =
                 { state with limit = Some limit }
 
-            [<CustomOperation("with_batch_size")>]
+            [<CustomOperation("batch_size")>]
             member __.WithBatchSize(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                     batch_size: int) =
                 { state with
                       batchSize = Some batch_size }
 
-            [<CustomOperation("with_single_batch")>]
+            [<CustomOperation("single_batch")>]
             member __.WithSingleBatch(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                       singleBatch: bool) =
                 { state with
                       singleBatch = Some singleBatch }
 
-            [<CustomOperation("with_comment")>]
+            [<CustomOperation("comment")>]
             member __.WithComment(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                   comment: 'Comment) =
                 { state with comment = Some comment }
 
-            [<CustomOperation("with_max_time_ms")>]
+            [<CustomOperation("max_time_ms")>]
             member __.WithMaxTimeMS(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                     maxTimeMs: int) =
                 { state with
                       maxTimeMS = Some maxTimeMs }
 
-            [<CustomOperation("with_read_concern")>]
+            [<CustomOperation("read_concern")>]
             member __.WithReadConcern(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                       readConcern: 'ReadConcern) =
                 { state with
                       readConcern = Some readConcern }
 
-            [<CustomOperation("with_max")>]
+            [<CustomOperation("max")>]
             member __.WithMax(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                               max: 'Max) =
                 { state with max = Some max }
 
-            [<CustomOperation("with_min")>]
+            [<CustomOperation("min")>]
             member __.WithMin(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                               min: 'Min) =
                 { state with min = Some min }
 
-            [<CustomOperation("with_return_key")>]
+            [<CustomOperation("return_key")>]
             member __.WithReturnKey(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                     returnKey: bool) =
                 { state with
                       returnKey = Some returnKey }
 
-            [<CustomOperation("with_show_record_id")>]
+            [<CustomOperation("show_record_id")>]
             member __.WithShowRecordId(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                        showRecordId: bool) =
                 { state with
                       showRecordId = Some showRecordId }
 
-            [<CustomOperation("with_tailable")>]
+            [<CustomOperation("tailable")>]
             member __.WithTailable(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                    tailable: bool) =
                 { state with tailable = Some tailable }
 
-            [<CustomOperation("with_oplog_replay")>]
+            [<CustomOperation("oplog_replay")>]
             member __.WithOplogReplay(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                       oplogReplay: bool) =
                 { state with
                       oplogReplay = Some oplogReplay }
 
-            [<CustomOperation("with_no_cursor_timeout")>]
+            [<CustomOperation("no_cursor_timeout")>]
             member __.WithNoCursorTimeout(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                           noCursorTimeOut: bool) =
                 { state with
                       noCursorTimeout = Some noCursorTimeOut }
 
-            [<CustomOperation("with_await_data")>]
+            [<CustomOperation("await_data")>]
             member __.WithAwaitData(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                     awaitData: bool) =
                 { state with
                       awaitData = Some awaitData }
 
-            [<CustomOperation("with_allow_partial_results")>]
+            [<CustomOperation("allow_partial_results")>]
             member __.WithAllowPartialResults(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                               awaitData: bool) =
                 { state with
                       allowPartialResults = Some awaitData }
 
-            [<CustomOperation("with_collation")>]
+            [<CustomOperation("collation")>]
             member __.WithCollation(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                     collation: Collation) =
                 { state with
                       collation = Some collation }
 
-            [<CustomOperation("with_allow_disk_use")>]
+            [<CustomOperation("allow_disk_use")>]
             member __.WithAllowDiskUse(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                        allowDiskUse: bool) =
                 { state with
                       allowDiskUse = Some allowDiskUse }
 
-        type FindAndModifyBuilder() =
+        type FindAndModifyBuilder(collection: string) =
 
 
             member __.Yield _ =
@@ -231,87 +226,82 @@ module Queries =
 
             member __.Run(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>)
                          =
-                (state :> IBuilder).ToJSON()
+                ({ state with
+                       findAndModify = collection } :> IBuilder).ToJSON()
 
-            [<CustomOperation("use_collection")>]
-            member __.UseCollection(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
-                                    collection: string) =
-                { state with
-                      findAndModify = collection }
-
-            [<CustomOperation("with_query")>]
+            [<CustomOperation("query")>]
             member __.WithQuery(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                 query: 'Query) =
                 { state with query = Some query }
 
-            [<CustomOperation("with_sort")>]
+            [<CustomOperation("sort")>]
             member __.WithSort(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                sort: 'Sort) =
                 { state with sort = Some sort }
 
-            [<CustomOperation("with_remove")>]
+            [<CustomOperation("remove")>]
             member __.WithRemove(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                  remove: bool) =
                 { state with remove = Some remove }
 
-            [<CustomOperation("with_update")>]
+            [<CustomOperation("update")>]
             member __.WithUpdate(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                  update: 'Update) =
                 { state with update = Some update }
 
-            [<CustomOperation("with_new")>]
+            [<CustomOperation("new")>]
             member __.WithNew(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                               withNew: bool) =
                 { state with ``new`` = Some withNew }
 
-            [<CustomOperation("with_fields")>]
+            [<CustomOperation("fields")>]
             member __.WithFields(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                  fields: 'Fields) =
                 { state with fields = Some fields }
 
-            [<CustomOperation("with_upsert")>]
+            [<CustomOperation("upsert")>]
             member __.WithUpsert(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                  upsert: bool) =
                 { state with upsert = Some upsert }
 
-            [<CustomOperation("with_bypass_document_validation")>]
+            [<CustomOperation("bypass_document_validation")>]
             member __.WithBypassDocumentValidation(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                                    bypassDocumentValidation: bool) =
                 { state with
                       bypassDocumentValidation = Some bypassDocumentValidation }
 
-            [<CustomOperation("with_write_concern")>]
+            [<CustomOperation("write_concern")>]
             member __.WithWriteConcern(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                        writeConcern: 'WriteConcern) =
                 { state with
                       writeConcern = Some writeConcern }
 
-            [<CustomOperation("with_collation")>]
+            [<CustomOperation("collation")>]
             member __.WithCollation(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                     collation: Collation) =
                 { state with
                       collation = Some collation }
 
 
-            [<CustomOperation("with_array_filters")>]
+            [<CustomOperation("array_filters")>]
             member __.WithArrayFilters(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                        arrayFilters: seq<obj>) =
                 { state with
                       arrayFilters = Some arrayFilters }
 
-            [<CustomOperation("with_hint")>]
+            [<CustomOperation("hint")>]
             member __.WithHint(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                hint: 'Hint) =
                 { state with hint = Some hint }
 
-            [<CustomOperation("with_comment")>]
+            [<CustomOperation("comment")>]
             member __.WithComment(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                   comment: 'Comment) =
                 { state with comment = Some comment }
 
 
-        let findAndModify = FindAndModifyBuilder()
-        let find = FindBuilder()
+        let findAndModify (collection: string) = FindAndModifyBuilder(collection)
+        let find (collection: string) = FindBuilder(collection)
 
     [<AutoOpen>]
     module Delete =
@@ -324,7 +314,7 @@ module Queries =
             interface IBuilder with
                 member __.ToJSON() = Json.Serialize __
 
-        type DeleteBuilder() =
+        type DeleteBuilder(collection: string) =
 
             member __.Yield _ =
                 { delete = ""
@@ -332,28 +322,26 @@ module Queries =
                   ordered = None
                   writeConcern = None }
 
-            member __.Run(state: DeleteCommand<'WriteConcern>) = (state :> IBuilder).ToJSON()
+            member __.Run(state: DeleteCommand<'WriteConcern>) =
+                ({ state with delete = collection } :> IBuilder).ToJSON()
 
-            [<CustomOperation("use_collection")>]
-            member __.UseCollection(state: DeleteCommand<'WriteConcern>, collection: string) =
-                { state with delete = collection }
 
-            [<CustomOperation("with_deletes")>]
+            [<CustomOperation("deletes")>]
             member __.WithDeletes(state: DeleteCommand<'WriteConcern>,
                                   deletes: seq<DeleteQuery<'Delete, 'Hint, 'Comment>>) =
                 { state with
                       deletes = deletes |> Seq.map box }
 
-            [<CustomOperation("with_ordered")>]
+            [<CustomOperation("ordered")>]
             member __.WithOrdered(state: DeleteCommand<'WriteConcern>, ordered: bool) =
                 { state with ordered = Some ordered }
 
-            [<CustomOperation("with_write_concern")>]
+            [<CustomOperation("write_concern")>]
             member __.WithWriteConcern(state: DeleteCommand<'WriteConcern>, concern: 'WriteConcern) =
                 { state with
                       writeConcern = Some concern }
 
-        let delete = DeleteBuilder()
+        let delete (collection: string) = DeleteBuilder(collection)
 
 
     [<AutoOpen>]
@@ -369,7 +357,7 @@ module Queries =
             interface IBuilder with
                 member __.ToJSON() = Json.Serialize __
 
-        type InsertCommandBuilder() =
+        type InsertCommandBuilder(collection: string) =
 
             member __.Yield _ =
                 { insert = ""
@@ -379,38 +367,36 @@ module Queries =
                   bypassDocumentValidation = None
                   comment = None }
 
-            member __.Run(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>) = (state :> IBuilder).ToJSON()
+            member __.Run(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>) =
+                ({ state with insert = collection } :> IBuilder).ToJSON()
 
-            [<CustomOperation("use_collection")>]
-            member __.UseCollection(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, collection: string) =
-                { state with insert = collection }
 
-            [<CustomOperation("with_documents")>]
+            [<CustomOperation("documents")>]
             member __.WithDocuments(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>,
                                     documents: seq<'TDocument>) =
                 { state with documents = documents }
 
-            [<CustomOperation("with_ordered")>]
+            [<CustomOperation("ordered")>]
             member __.WithOrdered(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, ordered: bool) =
                 { state with ordered = Some ordered }
 
-            [<CustomOperation("with_write_concern")>]
+            [<CustomOperation("write_concern")>]
             member __.WithWriteConcern(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>,
                                        writeConcern: 'WriteConcern) =
                 { state with
                       writeConcern = Some writeConcern }
 
-            [<CustomOperation("with_bypass_document_validation")>]
+            [<CustomOperation("bypass_document_validation")>]
             member __.WithBypassDocumentValidation(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>,
                                                    bypassDocumentValidation: bool) =
                 { state with
                       bypassDocumentValidation = Some bypassDocumentValidation }
 
-            [<CustomOperation("with_comment")>]
+            [<CustomOperation("comment")>]
             member __.WithComment(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, comment: 'Comment) =
                 { state with comment = Some comment }
 
-        let insert = InsertCommandBuilder()
+        let insert (collection: string) = InsertCommandBuilder(collection)
 
     [<AutoOpen>]
     module Update =
@@ -425,7 +411,7 @@ module Queries =
             interface IBuilder with
                 member __.ToJSON() = Json.Serialize __
 
-        type UpdateCommandBuilder() =
+        type UpdateCommandBuilder(collection: string) =
 
             member __.Yield _ =
                 { update = ""
@@ -435,35 +421,33 @@ module Queries =
                   bypassDocumentValidation = None
                   comment = None }
 
-            member __.Run(state: UpdateCommand<'WriteConcern, 'Comment>) = (state :> IBuilder).ToJSON()
+            member __.Run(state: UpdateCommand<'WriteConcern, 'Comment>) =
+                ({ state with update = collection } :> IBuilder).ToJSON()
 
-            [<CustomOperation("use_collection")>]
-            member __.UseCollection(state: UpdateCommand<'WriteConcern, 'Comment>, collection: string) =
-                { state with update = collection }
 
-            [<CustomOperation("with_updates")>]
+            [<CustomOperation("updates")>]
             member __.WithUpdates(state: UpdateCommand<'WriteConcern, 'Comment>,
                                   updates: seq<UpdateQuery<'Query, 'Update, 'Hint>>) =
                 { state with
                       updates = updates |> Seq.map box }
 
-            [<CustomOperation("with_ordered")>]
+            [<CustomOperation("ordered")>]
             member __.WithOrdered(state: UpdateCommand<'WriteConcern, 'Comment>, ordered: bool) =
                 { state with ordered = Some ordered }
 
-            [<CustomOperation("with_write_concern")>]
+            [<CustomOperation("write_concern")>]
             member __.WithWriteConcern(state: UpdateCommand<'WriteConcern, 'Comment>, writeConcern: 'WriteConcern) =
                 { state with
                       writeConcern = Some writeConcern }
 
-            [<CustomOperation("with_bypass_document_validation")>]
+            [<CustomOperation("bypass_document_validation")>]
             member __.WithBypassDocumentValidation(state: UpdateCommand<'WriteConcern, 'Comment>,
                                                    bypassDocumentValidation: bool) =
                 { state with
                       bypassDocumentValidation = Some bypassDocumentValidation }
 
-            [<CustomOperation("with_comment")>]
+            [<CustomOperation("comment")>]
             member __.WithComment(state: UpdateCommand<'WriteConcern, 'Comment>, comment: 'Comment) =
                 { state with comment = Some comment }
 
-        let update = UpdateCommandBuilder()
+        let update (collection: string) = UpdateCommandBuilder(collection)
