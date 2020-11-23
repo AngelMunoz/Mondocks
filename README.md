@@ -4,7 +4,7 @@
 > Get the early bits
 >
 > ```
-> dotnet add package Mondocks --version 0.1.0-beta2
+> dotnet add package Mondocks --version 0.1.0-beta3
 > ```
 
 
@@ -114,6 +114,8 @@ let main argv =
     
     0 // return an integer exit code// return an integer exit code
 ```
+
+If you want to see what else is available check the `samples` directory
 
 
 Thanks for the early feedback in twitter from Isaac, Zaid, Alexey, Alexander, and the F# community
