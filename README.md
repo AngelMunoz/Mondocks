@@ -1,4 +1,5 @@
 # Mondocks
+![nuget](https://badgen.net/nuget/v/mondocks/pre)
 
 A CE library to ease your work with mongodb from F#
 
@@ -10,6 +11,8 @@ the mongodb .NET driver is made entirely for C# and it expects you to pass data 
 Writing commands should be almost painless these commands produce a JSON string that can be utilized directly on your application or even copy/pasted into the mongo shell
 
 Commands are kind of a version of `raw sql queries` but they allow you to do what you already know how to do without much changes to the objects you might be manipulating already
+> Get the early bits 
+> `dotnet add package Mondocks --version 0.1.0-beta2`
 
 ## Sample Usage
 
