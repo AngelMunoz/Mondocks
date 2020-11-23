@@ -1,22 +1,31 @@
 # Mondocks
 ![nuget](https://badgen.net/nuget/v/mondocks/pre)
 
-A CE library to ease your work with mongodb from F#
-
 > This library is based on the mongodb manual reference
+>
 > https://docs.mongodb.com/manual/reference/command/
 
-the mongodb .NET driver is made entirely for C# and it expects you to pass data and information in a way C# can (reflection, inheritance among others) so I tried to go in a different way providing a kind of DSL that allow you to create json files leveraging the dynamism of anonymous records since they behave almost like javascript objects.
+
+The mongodb .NET driver is made entirely for C# and it expects you to pass data and information in a way C# can (reflection, inheritance among others). This ain't a problem but sometimes it makes working with complex object shapes quite clunky making you define types for almost every shape of your data, that can be fixed partialy with anonymous objects but it's clunky still.
+
+
+I tried to go in a different way providing a kind of DSL that allow you to create `MongoDB Commands (raw queries)` leveraging the dynamism of anonymous records since they behave almost like javascript objects.
 
 Writing commands should be almost painless these commands produce a JSON string that can be utilized directly on your application or even copy/pasted into the mongo shell
 
-Commands are kind of a version of `raw sql queries` but they allow you to do what you already know how to do without much changes to the objects you might be manipulating already
-> Get the early bits 
-> `dotnet add package Mondocks --version 0.1.0-beta2`
+Commands are kind of a version of `raw sql queries` but they allow you to do what you already know how to do without much changes to the objects you might be manipulating already.
+Ideally this library is meant to be used mostly with records and anonymous records to imitate `mongodb` queries
+
+> Get the early bits
+>
+> ```
+> dotnet add package Mondocks --version 0.1.0-beta2
+> ```
 
 ## Sample Usage
 
-Check out this quick sample of the work so far
+Check out this quick sample of what you can do right now
+
 ```fsharp
 open System
 open MongoDB.Driver
@@ -24,11 +33,15 @@ open MongoDB.Bson
 open Mondocks.Queries
 open Mondocks.Types
 
+// a Full object here
+type User = { _id: ObjectId; name: string; age: int }
+
 let createUsers minAge maxAge = 
     let random  = Random()
     insert "users" {
         documents 
             [
+                // an anonymous object that does not include a null _id
                 {| name = "Peter"; age = random.Next(minAge, maxAge); |}
                 {| name = "Sandra"; age = random.Next(minAge, maxAge); |}
                 {| name = "Mike"; age = random.Next(minAge, maxAge); |}
@@ -42,7 +55,9 @@ let updateUser (name: string) (newName: string) =
     update "users" {
         updates
             [
-                { q = {| name = name |} 
+                { // you can do mongo queries like 
+                  // {| ``$or`` = [] |} -> { $or: [] }
+                  q = {| name = name |}
                   u = {| name = newName; age = 5 |}
                   multi = Some false
                   upsert = Some false
@@ -67,12 +82,13 @@ let deleteUser (name: string) =
 // Define a function to construct a message to print
 let getUsersOverAge (age: int) =
     find "users" {
-        // equivalent to a mongo filter `{ age: { $gt: 10} }`
+        // equivalent to a mongo query filter 
+        // { age: { $gt: 10} }
         filter {| age = {| ``$gt``= age |} |}
         limit 2
         skip 1
     }
-type User = { _id: ObjectId; name: string; age: int }
+
 [<EntryPoint>]
 let main argv =
     let client = MongoClient("mongodb://localhost:27017")

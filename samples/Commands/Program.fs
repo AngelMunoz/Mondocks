@@ -1,16 +1,18 @@
-// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
-
 open System
-open Mondocks.Queries
 open MongoDB.Driver
 open MongoDB.Bson
+open Mondocks.Queries
 open Mondocks.Types
+
+// a Full record here
+type User = { _id: ObjectId; name: string; age: int }
 
 let createUsers minAge maxAge = 
     let random  = Random()
     insert "users" {
         documents 
             [
+                // an anonymous object that does not include a null _id
                 {| name = "Peter"; age = random.Next(minAge, maxAge); |}
                 {| name = "Sandra"; age = random.Next(minAge, maxAge); |}
                 {| name = "Mike"; age = random.Next(minAge, maxAge); |}
@@ -24,7 +26,9 @@ let updateUser (name: string) (newName: string) =
     update "users" {
         updates
             [
-                { q = {| name = name |} 
+                { // you can do mongo queries like 
+                  // {| ``$or`` = [] |} -> { $or: [] }
+                  q = {| name = name |}
                   u = {| name = newName; age = 5 |}
                   multi = Some false
                   upsert = Some false
@@ -44,16 +48,19 @@ let deleteUser (name: string) =
               hint = None
               comment = None }
         ]
+        
     }
 
 // Define a function to construct a message to print
 let getUsersOverAge (age: int) =
     find "users" {
+        // equivalent to a mongo query filter 
+        // { age: { $gt: 10} }
         filter {| age = {| ``$gt``= age |} |}
         limit 2
         skip 1
     }
-type User = { _id: ObjectId; name: string; age: int }
+
 [<EntryPoint>]
 let main argv =
     let client = MongoClient("mongodb://localhost:27017")
@@ -65,7 +72,7 @@ let main argv =
 
     let over20 = getUsersOverAge 20
     let result = db.RunCommand<FindResult<User>>(JsonCommand over20)
-    printfn $"FindResult Ok: %d{result.ok}"
+    printfn $"FindResult Ok: %f{result.ok}"
     result.cursor.firstBatch |> Seq.iter (fun value -> printfn $"%A{value}")
 
     let updatecmd = updateUser "Updateme" "Updated"
@@ -76,4 +83,4 @@ let main argv =
     let result = db.RunCommand<DeleteResult>(JsonCommand deletecmd)
     printfn $"DeleteResult: %A{result}"
     
-    0 // return an integer exit code
+    0 // return an integer exit code// return an integer exit code
