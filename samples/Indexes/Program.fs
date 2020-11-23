@@ -15,10 +15,10 @@ let indexCmd =
             index "lastName_idx" {
                 key (dict(["lastName", box -1.0]))
             }
-        }
+        } |> Seq.map box
     createIndexes "users" {
         indexes indexlist
-        comment {| msg = "this creates `sampleIndex` and `myindex` in the users collection"|}
+        comment {| message ="Some Comment" |}
     }
 
 

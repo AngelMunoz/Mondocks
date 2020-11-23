@@ -194,9 +194,9 @@ module Database =
 
             [<CustomOperation("indexes")>]
             member __.Indexes(state: CreateIndexesCommand<'WriteConcern, 'CommitQuorum, 'Comment>,
-                              indexes: seq<IndexBuilder>) =
+                              indexes: seq<obj>) =
                 { state with
-                      indexes = indexes |> Seq.map box }
+                      indexes = indexes }
 
             [<CustomOperation("write_concern")>]
             member __.WriteConcern(state: CreateIndexesCommand<'WriteConcern, 'CommitQuorum, 'Comment>,
