@@ -9,6 +9,15 @@ module Database =
     [<AutoOpen>]
     module Administration =
 
+        type DropIndexCommand<'WriteConcern, 'Comment> =
+            { dropIndexes: string
+              index: obj
+              writeConcern: Option<'WriteConcern>
+              comment: Option<'Comment> }
+
+            interface IBuilder with
+                member __.ToJSON() = Json.Serialize __
+
         type CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment> =
             { createIndexes: string
               indexes: seq<obj>
@@ -195,7 +204,8 @@ module Database =
             [<CustomOperation("indexes")>]
             member __.Indexes(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
                               indexes: seq<'Index>) =
-                { state with indexes = indexes |> Seq.map box }
+                { state with
+                      indexes = indexes |> Seq.map box }
 
             [<CustomOperation("write_concern")>]
             member __.WriteConcern(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
@@ -214,7 +224,42 @@ module Database =
                               comment: 'Comment) =
                 { state with comment = Some comment }
 
+        type DropIndexesBuilder(collection: string) =
+
+            member __.Yield _ =
+                { dropIndexes = ""
+                  index = obj
+                  writeConcern = None
+                  comment = None }
+
+            member __.Run(state: DropIndexCommand<'WriteConcern, 'Comment>) =
+                ({ state with dropIndexes = collection } :> IBuilder)
+                    .ToJSON()
+
+            [<CustomOperation("index")>]
+            member __.Index(state: DropIndexCommand<'WriteConcern, 'Comment>, index: obj) =
+                { state with index = box index }
+
+            member this.Index(state: DropIndexCommand<'WriteConcern, 'Comment>, index: string) =
+                this.Index(state, index |> box)
+
+            member this.Index(state: DropIndexCommand<'WriteConcern, 'Comment>, index: seq<obj>) =
+                this.Index(state, index |> box)
+
+            member this.Index(state: DropIndexCommand<'WriteConcern, 'Comment>, index: seq<string>) =
+                this.Index(state, index |> box)
+
+            [<CustomOperation("write_concern")>]
+            member __.WriteConcern(state: DropIndexCommand<'WriteConcern, 'Comment>, writeConcern: 'WriteConcern) =
+                { state with
+                      writeConcern = Some writeConcern }
+
+            [<CustomOperation("comment")>]
+            member __.Comment(state: DropIndexCommand<'WriteConcern, 'Comment>, comment: 'Comment) =
+                { state with comment = Some comment }
 
         let index (name: string) = IndexBuilder(name)
 
         let createIndexes (collection: string) = CreateIndexesBuilder(collection)
+
+        let dropIndexes (collection: string) = DropIndexesBuilder(collection)

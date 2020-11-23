@@ -2,6 +2,7 @@ namespace Mondocks.Types
 
 open MongoDB.Bson.Serialization.Attributes
 open Mondocks
+open System.Collections.Generic
 
 type Collation =
     { locale: string
@@ -43,9 +44,12 @@ type InsertResult = { n: int; ok: float }
 type UpdateResult = { n: int; nModified: int; ok: float }
 type DeleteResult = { n: int; ok: float }
 
+[<BsonIgnoreExtraElements>]
 type CreateIndexResult =
-    { createdCollectionAutomatically: Option<bool>
-      note: Option<string>
+    { createdCollectionAutomatically: bool
       numIndexesBefore: int
       numIndexesAfter: int
       ok: float }
+
+[<BsonIgnoreExtraElements>]
+type DropIndexResult = { nIndexesWas: int; ok: float }
