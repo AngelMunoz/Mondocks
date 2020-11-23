@@ -40,7 +40,11 @@ type Cursor<'T> = { firstBatch: seq<'T>; ns: string }
 
 type FindResult<'T> = { cursor: Cursor<'T>; ok: float }
 
-type InsertResult = { n: int; ok: float }
+[<BsonIgnoreExtraElements>]
+type InsertResult =
+    { n: int
+      ok: float }
+
 type UpdateResult = { n: int; nModified: int; ok: float }
 type DeleteResult = { n: int; ok: float }
 
@@ -53,3 +57,7 @@ type CreateIndexResult =
 
 [<BsonIgnoreExtraElements>]
 type DropIndexResult = { nIndexesWas: int; ok: float }
+
+type CountResult = { n: int; ok: float }
+
+type DistinctResult<'TValue> = { values: seq<'TValue>; ok: float }

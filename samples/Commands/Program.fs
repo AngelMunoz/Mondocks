@@ -20,7 +20,6 @@ let createUsers minAge maxAge =
                 {| name = "Updateme"; age = 1; |}
                 {| name = "Deleteme"; age = 50; |}
             ]
-        comment {| message = "" |}
     }
 
 let updateUser (name: string) (newName: string) =
