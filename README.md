@@ -5,7 +5,9 @@ A CE library to ease your work with mongodb from F#
 > This library is based on the mongodb manual reference
 > https://docs.mongodb.com/manual/reference/command/
 
-the mongodb .NET driver is made entirely for C# and it expects you to pass data and information in a way C# can (reflection, inheritance among others) so I tried to go in a different way providing some helpers that allow more idiomatic F# code.
+the mongodb .NET driver is made entirely for C# and it expects you to pass data and information in a way C# can (reflection, inheritance among others) so I tried to go in a different way providing a kind of DSL that allow you to create json files leveraging the dynamism of anonymous records since they behave almost like javascript objects.
+
+Writing commands should be almost painless these commands produce a JSON string that can be utilized directly on your application or even copy/pasted into the mongo shell
 
 Commands are kind of a version of `raw sql queries` but they allow you to do what you already know how to do without much changes to the objects you might be manipulating already
 
@@ -61,10 +63,10 @@ let deleteUser (name: string) =
         ]
     }
 
-// Define a function to construct a message to print
 let getUsersOverAge (age: int) =
     find {
         use_collection "users"
+        // you can use the object definitions including the operations you already know
         with_filter {| age = {| ``$gt``= age |} |}
         with_limit 2
         with_skip 1
@@ -94,6 +96,9 @@ let main argv =
     0 // return an integer exit code
 ```
 
+
+Thanks for the early feedback in twitter from Isaac, Zaid, Alexey, Alexander, and the F# community
+you can follow it on the first [issue](https://github.com/AngelMunoz/Mondocks/issues/1)
 
 # WIP
 
