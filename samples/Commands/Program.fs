@@ -4,12 +4,12 @@ open System
 open Mondocks.Queries
 open MongoDB.Driver
 open MongoDB.Bson
+open Mondocks.Types
 
 let createUsers minAge maxAge = 
     let random  = Random()
-    insert {
-        use_collection "users"
-        with_documents 
+    insert "users" {
+        documents 
             [
                 {| name = "Peter"; age = random.Next(minAge, maxAge); |}
                 {| name = "Sandra"; age = random.Next(minAge, maxAge); |}
@@ -21,9 +21,8 @@ let createUsers minAge maxAge =
     }
 
 let updateUser (name: string) (newName: string) =
-    update {
-        use_collection "users"
-        with_updates
+    update "users" {
+        updates
             [
                 { q = {| name = name |} 
                   u = {| name = newName; age = 5 |}
@@ -37,9 +36,8 @@ let updateUser (name: string) (newName: string) =
 
 
 let deleteUser (name: string) = 
-    delete {
-        use_collection "users"
-        with_deletes [
+    delete "users" {
+        deletes [
             { q = {| name = name |}
               limit = 1
               collation = None
@@ -50,32 +48,32 @@ let deleteUser (name: string) =
 
 // Define a function to construct a message to print
 let getUsersOverAge (age: int) =
-    find {
-        use_collection "users"
-        with_filter {| age = {| ``$gt``= age |} |}
-        with_limit 2
-        with_skip 1
+    find "users" {
+        filter {| age = {| ``$gt``= age |} |}
+        limit 2
+        skip 1
     }
-
+type User = { _id: ObjectId; name: string; age: int }
 [<EntryPoint>]
 let main argv =
     let client = MongoClient("mongodb://localhost:27017")
     let db = client.GetDatabase("mondocks")
 
     let userscmd = createUsers 15 50
-    let result = db.RunCommand<BsonDocument>(JsonCommand userscmd)
-    printfn $"InsertResult: [{result.ToJson()}]"
+    let result = db.RunCommand<InsertResult>(JsonCommand userscmd)
+    printfn $"InsertResult: %A{result}"
 
     let over20 = getUsersOverAge 20
-    let result = db.RunCommand<BsonDocument>(JsonCommand over20)
-    printfn $"FindResult: [{result.ToJson()}]"
+    let result = db.RunCommand<FindResult<User>>(JsonCommand over20)
+    printfn $"FindResult Ok: %d{result.ok}"
+    result.cursor.firstBatch |> Seq.iter (fun value -> printfn $"%A{value}")
 
     let updatecmd = updateUser "Updateme" "Updated"
-    let result = db.RunCommand<BsonDocument>(JsonCommand updatecmd)
-    printfn $"UpdateResult: [{result.ToJson()}]"
+    let result = db.RunCommand<UpdateResult>(JsonCommand updatecmd)
+    printfn $"UpdateResult: %A{result}"
 
     let deletecmd = deleteUser "Deleteme"
-    let result = db.RunCommand<BsonDocument>(JsonCommand deletecmd)
-    printfn $"DeleteResult: [{result.ToJson()}]"
+    let result = db.RunCommand<DeleteResult>(JsonCommand deletecmd)
+    printfn $"DeleteResult: %A{result}"
     
     0 // return an integer exit code
