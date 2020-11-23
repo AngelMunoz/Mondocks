@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>Mondocks</AssemblyName>
-    <Version>0.1.0-beta1</Version>
+    <Version>0.1.0-beta2</Version>
     <Description>A CE library for F# that may provide better interactions with mongo databases</Description>
     <Copyright>Copyright 2020 Angel D. Munoz.</Copyright>
     <Authors>Angel Munoz and contributors</Authors>
@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <PackageReference Include="FSharp.SystemTextJson" Version="0.15.14" />
+    <PackageReference Include="MongoDB.Bson" Version="2.11.4" />
   </ItemGroup>
 
 </Project>
