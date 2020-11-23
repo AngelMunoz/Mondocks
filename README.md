@@ -67,6 +67,7 @@ let deleteUser (name: string) =
 // Define a function to construct a message to print
 let getUsersOverAge (age: int) =
     find "users" {
+        // equivalent to a mongo filter `{ age: { $gt: 10} }`
         filter {| age = {| ``$gt``= age |} |}
         limit 2
         skip 1
