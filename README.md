@@ -13,7 +13,7 @@
 > https://docs.mongodb.com/manual/reference/command/
 
 
-This library provides a set of familiar tools if you work with mongo databases and can be a step into more F# goodies, this library doesn't prevent you from using the usual MongoDB/.NET driver so you can use them side by side. This library can help you if you have a lot of flexible data inside your database as oposed to the usual strict schemas that F#/C# are used to from SQL tools, this provides a DSL that allow you to create `MongoDB Commands (raw queries)` leveraging the dynamism of anonymous records since they behave almost like javascript objects.
+This library provides a set of familiar tools if you work with mongo databases and can be a step into more F# goodies, it doesn't prevent you from using the usual MongoDB/.NET driver so you can use them side by side. It also can help you if you have a lot of flexible data inside your database as oposed to the usual strict schemas that F#/C# are used to from SQL tools, this provides a DSL that allow you to create `MongoDB Commands (raw queries)` leveraging the dynamism of anonymous records since they behave almost like javascript objects.
 Writing commands should be almost painless these commands produce a JSON string that can be utilized directly on your application or even copy/pasted into the mongo shell.
 Commands are kind of a version of `raw sql queries` but they allow you to do what you already know how to do without much changes to the objects you might be manipulating already.
 Ideally this library is meant to be used mostly with records and anonymous records to imitate `mongodb` queries
