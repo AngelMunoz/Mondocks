@@ -29,15 +29,14 @@ open MongoDB.Bson
 open Mondocks.Queries
 open Mondocks.Types
 
-// a Full object here
+// a named record
 type User = { _id: ObjectId; name: string; age: int }
 
 let createUsers minAge maxAge = 
     let random  = Random()
     insert "users" {
         documents 
-            [
-                // an anonymous object that does not include a null _id
+            [   // an anonymous object that does not include a null _id
                 {| name = "Peter"; age = random.Next(minAge, maxAge); |}
                 {| name = "Sandra"; age = random.Next(minAge, maxAge); |}
                 {| name = "Mike"; age = random.Next(minAge, maxAge); |}
@@ -50,28 +49,27 @@ let createUsers minAge maxAge =
 let updateUser (name: string) (newName: string) =
     update "users" {
         updates
-            [
-                { // you can do mongo queries like 
-                  // {| ``$or`` = [] |} -> { $or: [] }
-                  q = {| name = name |}
-                  u = {| name = newName; age = 5 |}
-                  multi = Some false
-                  upsert = Some false
-                  collation = None 
-                  arrayFilters = None
-                  hint = None }
+            [ { // you can do mongo queries like 
+                // {| ``$or`` = [] |} -> { $or: [] }
+                q = {| name = name |}
+                u = {| name = newName; age = 5 |}
+                multi = Some false
+                upsert = Some false
+                collation = None 
+                arrayFilters = None
+                hint = None }
             ]
     }
 
 
 let deleteUser (name: string) = 
     delete "users" {
-        deletes [
-            { q = {| name = name |}
-              limit = 1
-              collation = None
-              hint = None
-              comment = None }
+        deletes 
+           [ { q = {| name = name |}
+               limit = 1
+               collation = None
+               hint = None
+               comment = None }
         ]
     }
 
@@ -119,15 +117,17 @@ you can follow it on the first [issue](https://github.com/AngelMunoz/Mondocks/is
 
 ### Goals
 - Emit 100% compatible json with https://docs.mongodb.com/manual/reference/command/
-- Provide Types to ease the transition between command execution and it's return
+- Provide Tools that are familiar from those who come from other environments to be productive since day 1
+- Provide Types to ease the transition between command execution and it's return types
 - Provide CE's to generate sub types of the main command definitions (e.g. index)
 
 ### Non Eequired Extras
 - provide helpers to write different syntax (e.g. `filter (fun m -> m.prop = value)`, `filter ("prop" gt 10)`)
 
 ### Non Goals
-- convert this into a document mapper
-- provide 100% of the mongo commands
+- Convert this into a document mapper
+- Provide 100% of the mongo commands
+- Provide a 100% F# idiomatic solution
 
 This is a work in progress, you can help providing feedback about it's usage
 
