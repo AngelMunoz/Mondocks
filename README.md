@@ -1,3 +1,5 @@
+[mongodb extended json]: https://docs.mongodb.com/manual/reference/mongodb-extended-json/
+
 # Mondocks
 
 ![nuget](https://badgen.net/nuget/v/mondocks/pre)
@@ -111,12 +113,69 @@ let main argv =
 
 If you want to see what else is available check the `samples` directory
 
-Thanks for the early feedback in twitter from Isaac, Zaid, Alexey, Alexander, and the F# community
-you can follow it on the first [issue](https://github.com/AngelMunoz/Mondocks/issues/1)
+# Caveats
+
+Since we're using the [mongodb extended json] spec there are some things that you can't represent as simple strings or numbers in your queries. for example
+Let's say you want to update a record found by id, you might feel tempted to just update your record properties and passing it as is like this
+
+```fsharp
+let place = { place with name = "new name" }
+update "places" {
+    updates [
+        { q = {| _id = place._id |}
+          u = place
+          upsert = Some false
+          multi = Some false
+          collation = None
+          arrayFilters = None
+          hint = None }
+    ]
+}
+```
+
+That would produce the following id in the produced json `"{ \"_id\": \"aef123eefa123b\" }"`, and that is an in correct way to filter by ObjectId. to get the desired result you need to do it like this.
+
+```fsharp
+let place = { place with name = "new name" }
+update "places" {
+    updates [
+        { q = {| _id = {| ``$oid``: place._id |} |}
+          u = place
+          upsert = Some false
+          multi = Some false
+          collation = None
+          arrayFilters = None
+          hint = None }
+    ]
+}
+```
+
+but even then you will find an error if you try to execute it like that because you can't update an ObjectId with a string (the \_id field present in `place`) to fix that error you simply need to either remove the `_id` from the update definition or to send it as the canonical version of the `_id` field which is `{ _id: { $oid: "the object id" } }` in this case the example would be like this
+
+```fsharp
+let place = { place with name = "new name" }
+update "places" {
+    updates [
+        { q = {| _id = {| ``$oid``: place._id |} |}
+          u = {| place with _id = {| ``$oid``: place._id |} |}
+          upsert = Some false
+          multi = Some false
+          collation = None
+          arrayFilters = None
+          hint = None }
+    ]
+}
+```
+
+similar things can happen with other binary elements like Dates, timestamps, int64 fields etc for more information on how to represent those values take a look at
+https://docs.mongodb.com/manual/reference/mongodb-extended-json/#example
+
+> Thanks for the early feedback in twitter from Isaac, Zaid, Alexey, Alexander, and the F# community
+> you can follow it on the first [issue](https://github.com/AngelMunoz/Mondocks/issues/1)
 
 ### Goals
 
-- Emit 100% compatible json with https://docs.mongodb.com/manual/reference/command/
+- Emit 100% compatible json with https://docs.mongodb.com/manual/reference/command/ and https://docs.mongodb.com/manual/reference/mongodb-extended-json
 - Provide Tools that are familiar from those who come from other environments to be productive since day 1
 - Provide Types to ease the transition between command execution and it's return types
 - Provide CE's to generate sub types of the main command definitions (e.g. index)
