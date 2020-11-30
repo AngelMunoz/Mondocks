@@ -2,7 +2,7 @@
 
 # Mondocks
 
-![nuget](https://badgen.net/nuget/v/mondocks/pre)
+![nuget](https://badgen.net/nuget/v/mondocks)
 
 > ```
 > dotnet add package Mondocks --version 0.1.0
@@ -21,6 +21,7 @@ Ideally this library is meant to be used mostly with records and anonymous recor
 ## Sample Usage
 
 Check out this quick sample of what you can do right now
+> You can also check this [gist](https://gist.github.com/AngelMunoz/35cf2bc439da9969664f9987f7109ee3)
 
 ```fsharp
 open System
