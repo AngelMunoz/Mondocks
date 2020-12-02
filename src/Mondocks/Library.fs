@@ -16,12 +16,42 @@ module internal Json =
             ObjectId.Parse(reader.GetString())
 
         override _.Write(writer: Utf8JsonWriter, value: ObjectId, options: JsonSerializerOptions) =
+            writer.WriteStartObject()
+            writer.WritePropertyName("$oid")
             writer.WriteStringValue(value.ToString())
+            writer.WriteEndObject()
+
+    type DateTimeConverter() =
+        inherit JsonConverter<DateTime>()
+
+        override _.Read(reader: byref<Utf8JsonReader>, typeToConvert: Type, options: JsonSerializerOptions) =
+            let deserialized =
+                JsonSerializer.Deserialize<{| ``$date``: {| ``$numberLong``: string |} |}>(reader.GetString())
+
+            DateTimeOffset
+                .FromUnixTimeMilliseconds(deserialized.``$date``.``$numberLong`` |> int64)
+                .Date
+
+        override _.Write(writer: Utf8JsonWriter, value: DateTime, options: JsonSerializerOptions) =
+            let stringValue =
+                DateTimeOffset
+                    .op_Implicit(value)
+                    .ToUnixTimeMilliseconds()
+                |> string
+
+            writer.WriteStartObject()
+            writer.WritePropertyName("$date")
+            writer.WriteStartObject()
+            writer.WritePropertyName("$numberLong")
+            writer.WriteStringValue(stringValue)
+            writer.WriteEndObject()
+            writer.WriteEndObject()
 
     let private defaults =
         let options = JsonSerializerOptions()
         options.Converters.Add(JsonFSharpConverter())
         options.Converters.Add(ObjectIdConverter())
+        options.Converters.Add(DateTimeConverter())
         options.IgnoreNullValues <- true
         options
 
