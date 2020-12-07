@@ -41,7 +41,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1
 
       - name: Build
-        run: dotnet build src/Mondocks --configuration ${{ env.configuration }}
+        run: dotnet build --configuration ${{ env.configuration }}
 
       - name: Create NuGet Artifacts
         uses: actions/upload-artifact@master

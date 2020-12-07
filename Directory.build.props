@@ -1,0 +1,24 @@
+<Project>
+    <PropertyGroup>
+        <Product>Mondocks</Product>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>Copyright 2020 Angel D. Munoz.</Copyright>
+        <Authors>Angel Munoz and contributors</Authors>
+        
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageId>Mondocks</PackageId>
+        <PackageTags>mongodb;fsharp;nosql;library;dotnet;dotnet5;dotnet-core</PackageTags>
+        <RepositoryUrl>https://github.com/AngelMunoz/Mondocks.git</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/AngelMunoz/Mondocks</PackageProjectUrl>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/AngelMunoz/Mondocks</RepositoryUrl>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.3.37" PrivateAssets="all" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)\LICENSE" Pack="true" PackagePath="LICENSE" />
+    </ItemGroup>
+</Project> 
