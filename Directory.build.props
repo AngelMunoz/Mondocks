@@ -7,7 +7,6 @@
         
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <PackageId>Mondocks</PackageId>
         <PackageTags>mongodb;fsharp;nosql;library;dotnet;dotnet5;dotnet-core</PackageTags>
         <RepositoryUrl>https://github.com/AngelMunoz/Mondocks.git</RepositoryUrl>
         <PackageProjectUrl>https://github.com/AngelMunoz/Mondocks</PackageProjectUrl>
