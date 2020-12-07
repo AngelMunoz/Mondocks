@@ -192,4 +192,3 @@ module internal Json =
 
     let Serialize<'T> (value: 'T) =
         JsonSerializer.Serialize<'T>(value, defaults)
-

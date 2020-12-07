@@ -1,24 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>Mondocks</AssemblyName>
-    <Version>0.2.0</Version>
-    <Description>A CE library for F# that may provide better interactions with mongo databases</Description>
-    <Copyright>Copyright 2020 Angel D. Munoz.</Copyright>
-    <Authors>Angel Munoz and contributors</Authors>
-
     <!-- Build settings -->
     <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
-    <OutputType>Library</OutputType>
-
-    <!-- NuGet Pack settings -->
-    <PackageId>Mondocks</PackageId>
-    <PackageTags>mongodb;fsharp;nosql;library;dotnet;dotnet5;dotnet-core</PackageTags>
-    <PackageProjectUrl>https://github.com/AngelMunoz/Mondocks</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/AngelMunoz/Mondocks</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
