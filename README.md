@@ -189,5 +189,3 @@ https://docs.mongodb.com/manual/reference/mongodb-extended-json/#example
 - Provide a 100% F# idiomatic solution
 
 This is a work in progress, you can help providing feedback about it's usage
-
-![Samples](./2020-11-22_14-51.png)
