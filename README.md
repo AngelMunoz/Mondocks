@@ -5,13 +5,12 @@
 ![nuget](https://badgen.net/nuget/v/mondocks)
 
 > ```
-> dotnet add package Mondocks --version 0.1.0
+> dotnet add package Mondocks --version 0.2.0
 > ```
 
 > This library is based on the mongodb extended json spec and mongodb manual reference
 >
-> https://docs.mongodb.com/manual/reference/mongodb-extended-json/
-> https://docs.mongodb.com/manual/reference/command/
+> https://docs.mongodb.com/manual/reference/mongodb-extended-json/ > https://docs.mongodb.com/manual/reference/command/
 
 This library provides a set of familiar tools if you work with mongo databases and can be a step into more F# goodies, it doesn't prevent you from using the usual MongoDB/.NET driver so you can use them side by side. It also can help you if you have a lot of flexible data inside your database as oposed to the usual strict schemas that F#/C# are used to from SQL tools, this provides a DSL that allow you to create `MongoDB Commands (raw queries)` leveraging the dynamism of anonymous records since they behave almost like javascript objects.
 Writing commands should be almost painless these commands produce a JSON string that can be utilized directly on your application or even copy/pasted into the mongo shell.
@@ -21,6 +20,7 @@ Ideally this library is meant to be used mostly with records and anonymous recor
 ## Sample Usage
 
 Check out this quick sample of what you can do right now
+
 > You can also check this [gist](https://gist.github.com/AngelMunoz/35cf2bc439da9969664f9987f7109ee3)
 
 ```fsharp
