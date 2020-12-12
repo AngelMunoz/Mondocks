@@ -95,7 +95,7 @@ let main argv =
 
     let over20 = getUsersOverAge 20
     let result = db.RunCommand<FindResult<User>>(JsonCommand over20)
-    printfn $"FindResult Ok: %d{result.ok}"
+    printfn $"FindResult Ok: %f{result.ok}"
     result.cursor.firstBatch |> Seq.iter (fun value -> printfn $"%A{value}")
 
     let updatecmd = updateUser "Updateme" "Updated"
