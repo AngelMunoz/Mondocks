@@ -3,6 +3,7 @@
 # Mondocks
 
 ![nuget](https://badgen.net/nuget/v/mondocks)
+[![Binder](https://notebooks.gesis.org/binder/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/AngelMunoz/Mondocks/HEAD?filepath=CRUD-Guide.ipynb)
 
 > ```
 > dotnet add package Mondocks --version 0.2.0
