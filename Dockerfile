@@ -2,7 +2,7 @@ FROM jupyter/base-notebook:latest
 
 # Install .NET CLI dependencies
 
-ARG NB_USER=daniel
+ARG NB_USER=jovyan
 ARG NB_UID=1000
 ENV USER ${NB_USER}
 ENV NB_UID ${NB_UID}
