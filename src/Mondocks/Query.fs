@@ -6,13 +6,32 @@ module Queries =
 
     [<AutoOpen>]
     module Find =
+        /// <summary>
+        /// Represents a Find command
+        /// for more information take a look at <a href="https://docs.mongodb.com/manual/reference/command/find/#syntax">find syntax</a>
+        /// </summary>
         type FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min> =
-            { find: string
+            {
+              /// Name of the collection where this find operation will be targeted
+              find: string
+              /// Optional object that is going to be used to filter
               filter: Option<'Filter>
+              /// <summary>
+              ///  optional object to sort by property
+              /// </summary>
+              /// <example>
+              ///     Some {| ``$sort`` = {| name = 1; age = -1 |} |}
+              /// </example>
+              /// <example>
+              ///     None
+              /// </example>
               sort: Option<'Sort>
+              /// <summary>A <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection">projection object</a></summary>
               projection: Option<'Projection>
               hint: Option<'Hint>
+              /// User for pagination
               skip: Option<int>
+              /// User for pagination
               limit: Option<int>
               batchSize: Option<int>
               singleBatch: Option<bool>
@@ -34,14 +53,50 @@ module Queries =
             interface IBuilder with
                 member __.ToJSON() = Json.Serialize __
 
+        /// <summary>
+        ///   Tries to find a single document and apply the supplied modifications to it
+        ///   <a href="https://docs.mongodb.com/manual/reference/command/findAndModify/#findandmodify">Reference</a>
+        /// </summary>
         type FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment> =
-            { findAndModify: string
+            { /// name of the collection where this query is targeted at
+              findAndModify: string
+              /// An optional object that will be used as a filter for the query
               query: Option<'Query>
+              /// <summary>
+              ///  optional object to sort by property
+              /// </summary>
+              /// <example>
+              ///    Some {| ``$sort`` = {| name = 1; age = -1 |} |}
+              /// </example>
+              /// <example>
+              ///    None
+              /// </example>
               sort: Option<'Sort>
+              /// Optional property that indicates whether this document should be removed or not.
+              /// Must specify either the remove or the update field
               remove: Option<bool>
+              /// Optional property that indicates the new values for the objects that match the query.
+              /// Must specify either the remove or the update field
               update: Option<'Update>
+              /// optional
+              /// When true, returns the modified document rather than the original
               ``new``: Option<bool>
+              /// <summary>
+              ///  A subset of fields to return. The fields document specifies an inclusion of a field with 1, as in
+              /// </summary>
+              /// <example>
+              ///    Some {| name = 1; password = 0 |}
+              /// </example>
+              /// <example>
+              ///    None
+              /// </example>
               fields: Option<'Fields>
+              /// <summary>
+              /// Optional.
+              /// Used in conjunction with the update field.
+              /// Creates a new document if no documents match the query
+              /// Updates a single document that matches the query.
+              /// </summary>
               upsert: Option<bool>
               bypassDocumentValidation: Option<bool>
               writeConcern: Option<'WriteConcern>
@@ -79,19 +134,55 @@ module Queries =
                   collation = None
                   allowDiskUse = None }
 
-            member __.Run(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>) =
-                ({ state with find = collection } :> IBuilder).ToJSON()
 
+            /// <summary>
+            /// Converts the query into a serialized string
+            /// </summary>
+            member __.Run(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>) =
+                ({ state with find = collection } :> IBuilder)
+                    .ToJSON()
+
+            /// <summary>
+            ///  Optional object that is going to be used to filter the find query
+            /// </summary>
+            /// <example>
+            ///     find "user" {
+            ///       // filters by name equals Frank
+            ///       filter {| name = "Frank"|}
+            ///     }
+            /// </example>
             [<CustomOperation("filter")>]
             member __.WithFilter(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                  filter: 'Filter) =
                 { state with filter = Some filter }
 
+            /// <summary>
+            ///  Optional. Object to sort by property
+            /// </summary>
+            /// <example>
+            ///     find "user" {
+            ///       // ... omit other fields
+            ///       // sorts by name ascending and age descending
+            ///       sort {| ``$sort`` = {| name = 1; age = -1 |} |}
+            ///       // ... omit other fields
+            ///     }
+            /// </example>
             [<CustomOperation("sort")>]
             member __.WithSort(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                sort: 'Sort) =
                 { state with sort = Some sort }
 
+            /// <summary>
+            ///  A <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection">Projection Object</a>
+            /// </summary>
+            /// <example>
+            ///     find "user" {
+            ///       // ... omit other fields
+            ///       // from the found documents bring only the name and the age, omit the password
+            ///       projection {| name = 1; age = 1; password = 0 |}
+            ///       // ... omit other fields
+            ///     }
+            /// </example>
             [<CustomOperation("projection")>]
             member __.WithProjection(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                      projection: 'Projection) =
@@ -103,11 +194,35 @@ module Queries =
                                hint: 'Hint) =
                 { state with hint = Some hint }
 
+            /// <summary>
+            /// Optional. An integer value used to omit the first n amount of documents from the find query
+            /// Use together with Limit to paginate results
+            /// </summary>
+            /// <example>
+            ///     find "user" {
+            ///       // ... omit other fields
+            ///       // omits the first 10 results of the find query
+            ///       skip 10
+            ///       // ... omit other fields
+            ///     }
+            /// </example>
             [<CustomOperation("skip")>]
             member __.WithSkip(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                skip: int) =
                 { state with skip = Some skip }
 
+            /// <summary>
+            /// Optional. An integer value used to take at most n amount of documents
+            /// Use together with Skip to paginate results
+            /// </summary>
+            /// <example>
+            ///     find "user" {
+            ///       // ... omit other fields
+            ///       // takes only 10 documents from the find query
+            ///       limit 10
+            ///       // ... omit other fields
+            ///     }
+            /// </example>
             [<CustomOperation("limit")>]
             member __.WithLimit(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
                                 limit: int) =
@@ -224,26 +339,61 @@ module Queries =
                   hint = None
                   comment = None }
 
+            /// <summary>
+            /// Converts the query into a serialized string
+            /// </summary>
             member __.Run(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>)
                          =
                 ({ state with
-                       findAndModify = collection } :> IBuilder).ToJSON()
+                       findAndModify = collection }
+                :> IBuilder)
+                    .ToJSON()
 
+            /// <summary>
+            ///  Optional object that is going to be used to filter the findAndModify query
+            /// </summary>
+            /// <example>
+            ///     findAndModify "user" {
+            ///       // filters the collection for names that are either
+            ///       // Frank, Sandra, Peter or Monica
+            ///       query {| name = {| ``$in`` = ["Frank"; "Sandra"; "Peter"; "Monica"] |}
+            ///     }
+            /// </example>
+            /// <example>
+            ///     findAndModify "user" {
+            ///       // filters by age where the age is greater or equal than 30
+            ///       query {| age = {| ``$gte`` = 30 |}
+            ///     }
+            /// </example>
             [<CustomOperation("query")>]
             member __.WithQuery(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                 query: 'Query) =
                 { state with query = Some query }
 
+
+            /// <summary>
+            ///  A <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection">Projection Object</a>
+            /// </summary>
+            /// <example>
+            ///     findAndModify "user" {
+            ///       // ... omit other fields
+            ///       // sorts by name ascending and age descending
+            ///       sort {| ``$sort`` = {| name = 1; age = -1 |} |}
+            ///       // ... omit other fields
+            ///     }
+            /// </example>
             [<CustomOperation("sort")>]
             member __.WithSort(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                sort: 'Sort) =
                 { state with sort = Some sort }
-
+            /// Optional. property that indicates whether this document should be removed or not.
+            /// Must specify either the remove or the update field
             [<CustomOperation("remove")>]
             member __.WithRemove(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                  remove: bool) =
                 { state with remove = Some remove }
-
+            /// Optional. property that indicates the new values for the objects that match the query.
+            /// Must specify either the remove or the update field
             [<CustomOperation("update")>]
             member __.WithUpdate(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                  update: 'Update) =
@@ -254,11 +404,29 @@ module Queries =
                               withNew: bool) =
                 { state with ``new`` = Some withNew }
 
+            /// <summary>
+            ///  A <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection">Projection Object</a>.
+            ///  It is a subset of fields to return. The fields document specifies an inclusion of a field with 1
+            /// </summary>
+            /// <example>
+            ///     findAndModify "user" {
+            ///       // ... omit other fields
+            ///       // from the found documents bring only the name and the age, omit the password
+            ///       fields {| name = 1; age = 1; password = 0 |}
+            ///       // ... omit other fields
+            ///     }
+            /// </example>
             [<CustomOperation("fields")>]
             member __.WithFields(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                  fields: 'Fields) =
                 { state with fields = Some fields }
 
+            /// <summary>
+            /// Optional.
+            /// Used in conjunction with the update field.
+            /// Creates a new document if no documents match the query
+            /// Updates a single document that matches the query.
+            /// </summary>
             [<CustomOperation("upsert")>]
             member __.WithUpsert(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
                                  upsert: bool) =
@@ -299,8 +467,14 @@ module Queries =
                                   comment: 'Comment) =
                 { state with comment = Some comment }
 
-
+        /// <summary>creates a find and modify command for a single document</summary>
+        /// <param name="collection">The name of the collection to perform this query against</param>
+        /// <returns>returns a <see cref="Mondocks.Queries.Find.FindAndModifyBuilder">FindAndModifyBuilder</see></returns>
         let findAndModify (collection: string) = FindAndModifyBuilder(collection)
+
+        /// <summary>Creates a find command for documents in the specified collection</summary>
+        /// <param name="collection">The name of the collection to perform this query against</param>
+        /// <returns>returns a <see cref="Mondocks.Queries.Find.FindBuilder">FindBuilder</see></returns>
         let find (collection: string) = FindBuilder(collection)
 
     [<AutoOpen>]
@@ -323,14 +497,45 @@ module Queries =
                   writeConcern = None }
 
             member __.Run(state: DeleteCommand<'WriteConcern>) =
-                ({ state with delete = collection } :> IBuilder).ToJSON()
+                ({ state with delete = collection } :> IBuilder)
+                    .ToJSON()
 
-
+            /// <summary>
+            ///  A sequence of anonymous record objects (boxed) that will be used
+            /// to perform against the collection
+            /// </summary>
+            /// <example>
+            ///     delete "users" {
+            ///       // deletes 1 user named "Peter"
+            ///       deletes [box {| q = {| name = "Peter" |}; limit = 1 |}]
+            ///     }
+            /// </example>
             [<CustomOperation("deletes")>]
-            member __.WithDeletes(state: DeleteCommand<'WriteConcern>,
-                                  deletes: seq<DeleteQuery<'Delete, 'Hint, 'Comment>>) =
-                { state with
-                      deletes = deletes |> Seq.map box }
+            member __.WithDeletes(state: DeleteCommand<'WriteConcern>, deletes: seq<obj>) =
+                { state with deletes = deletes }
+
+            /// <summary>
+            ///  A sequence of <see cref="Mondocks.Types.DeleteQuery">DeleteQuery</see> objects that will be used
+            /// to perform against the collection
+            /// </summary>
+            /// <example>
+            ///     delete "users" {
+            ///       // filters the collection for names that are either
+            ///       // Frank, Sandra, Peter or Monica
+            ///       deletes [
+            ///           { q = {| name = name |}
+            ///             // To delete all documents that match
+            ///             // `limit = 0`
+            ///             limit = 1
+            ///             collation = None
+            ///             hint = None
+            ///             comment = None }
+            ///       ]
+            ///     }
+            /// </example>
+            member this.WithDeletes(state: DeleteCommand<'WriteConcern>,
+                                    deletes: seq<DeleteQuery<'Delete, 'Hint, 'Comment>>) =
+                this.WithDeletes(state, deletes |> Seq.map box)
 
             [<CustomOperation("ordered")>]
             member __.WithOrdered(state: DeleteCommand<'WriteConcern>, ordered: bool) =
@@ -341,6 +546,9 @@ module Queries =
                 { state with
                       writeConcern = Some concern }
 
+        /// <summary>Creates a delete command for documents in the specified collection</summary>
+        /// <param name="collection">The name of the collection to perform this query against</param>
+        /// <returns>returns a <see cref="Mondocks.Queries.Delete.DeleteBuilder">DeleteBuilder</see></returns>
         let delete (collection: string) = DeleteBuilder(collection)
 
 
@@ -368,9 +576,30 @@ module Queries =
                   comment = None }
 
             member __.Run(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>) =
-                ({ state with insert = collection } :> IBuilder).ToJSON()
+                ({ state with insert = collection } :> IBuilder)
+                    .ToJSON()
 
-
+            /// <summary>
+            ///  A sequence of documents that will be inserted
+            /// into the collection, they can be records or anonymous records
+            /// </summary>
+            /// <example>
+            ///     type Post = { title: string; content: string }
+            ///     insert "posts" {
+            ///       // Inserts two new documents
+            ///       documents
+            ///           [ { title= "Title"; content = "Content" }
+            ///             { title= "Title"; content = "Content" } ]
+            ///     }
+            /// </example>
+            /// <example>
+            ///     insert "posts" {
+            ///       // Inserts two new documents
+            ///       documents
+            ///           [ {| title= "Title"; content = "Content" |}
+            ///             {| title= "Title"; content = "Content" |} ]
+            ///     }
+            /// </example>
             [<CustomOperation("documents")>]
             member __.WithDocuments(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>,
                                     documents: seq<'TDocument>) =
@@ -396,6 +625,9 @@ module Queries =
             member __.WithComment(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, comment: 'Comment) =
                 { state with comment = Some comment }
 
+        /// <summary>Creates an insert command for documents in the specified collection</summary>
+        /// <param name="collection">The name of the collection to perform this query against</param>
+        /// <returns>returns a <see cref="Mondocks.Queries.Insert.InsertCommandBuilder">InserCommandBuilder</see></returns>
         let insert (collection: string) = InsertCommandBuilder(collection)
 
     [<AutoOpen>]
@@ -422,14 +654,46 @@ module Queries =
                   comment = None }
 
             member __.Run(state: UpdateCommand<'WriteConcern, 'Comment>) =
-                ({ state with update = collection } :> IBuilder).ToJSON()
+                ({ state with update = collection } :> IBuilder)
+                    .ToJSON()
 
 
+            /// <summary>
+            ///  A sequence of custom documents that will be used to query against the collection
+            /// </summary>
+            /// <example>
+            ///     update "users" {
+            ///       // Inserts two new documents
+            ///       updates
+            ///           [ box {| q = {| _id = user._id |}
+            ///                    u = {| user with email = "new@email.com" |}
+            ///                    upsert = true
+            ///                    multi = false |} ]
+            ///     }
+            /// </example>
             [<CustomOperation("updates")>]
-            member __.WithUpdates(state: UpdateCommand<'WriteConcern, 'Comment>,
-                                  updates: seq<UpdateQuery<'Query, 'Update, 'Hint>>) =
-                { state with
-                      updates = updates |> Seq.map box }
+            member __.WithUpdates(state: UpdateCommand<'WriteConcern, 'Comment>, updates: seq<obj>) =
+                { state with updates = updates }
+
+            /// <summary>
+            ///  A sequence of custom documents that will be used to query against the collection
+            /// </summary>
+            /// <example>
+            ///     update "users" {
+            ///       // Inserts two new documents
+            ///       updates
+            ///           [ { q = {| _id = user._id |}
+            ///               u = { user with email = "new@email.com" }
+            ///               upsert = Some false
+            ///               multi = Some false
+            ///               collation = None
+            ///               arrayFilters = None
+            ///               hint = None } ]
+            ///     }
+            /// </example>
+            member this.WithUpdates(state: UpdateCommand<'WriteConcern, 'Comment>,
+                                    updates: seq<UpdateQuery<'Query, 'Update, 'Hint>>) =
+                this.WithUpdates(state, updates |> Seq.map box)
 
             [<CustomOperation("ordered")>]
             member __.WithOrdered(state: UpdateCommand<'WriteConcern, 'Comment>, ordered: bool) =
@@ -450,4 +714,7 @@ module Queries =
             member __.WithComment(state: UpdateCommand<'WriteConcern, 'Comment>, comment: 'Comment) =
                 { state with comment = Some comment }
 
+        /// <summary>Creates an update command for documents in the specified collection</summary>
+        /// <param name="collection">The name of the collection to perform this query against</param>
+        /// <returns>returns a <see cref="Mondocks.Queries.Update.UpdateCommandBuilder">UpdateCommandBuilder</see></returns>
         let update (collection: string) = UpdateCommandBuilder(collection)
