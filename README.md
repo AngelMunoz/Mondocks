@@ -6,7 +6,7 @@
 [![Binder](https://notebooks.gesis.org/binder/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/AngelMunoz/Mondocks/HEAD)
 
 > ```
-> dotnet add package Mondocks --version 0.2.0
+> dotnet add package Mondocks
 > ```
 
 > This library is based on the mongodb extended json spec and mongodb manual reference
@@ -31,9 +31,7 @@ open MongoDB.Bson
 open Mondocks.Queries
 open Mondocks.Types
 
-// a named record
 type User = { _id: ObjectId; name: string; age: int }
-
 let createUsers minAge maxAge =
     let random  = Random()
     insert "users" {
@@ -47,7 +45,14 @@ let createUsers minAge maxAge =
                 {| name = "Deleteme"; age = 50; |}
             ]
     }
-
+let getUsersOverAge (age: int) =
+    find "users" {
+        // equivalent to a mongo query filter
+        // { age: { $gt: age } }
+        filter {| age = {| ``$gt``= age |} |}
+        limit 2
+        skip 1
+    }
 let updateUser (name: string) (newName: string) =
     update "users" {
         updates
@@ -62,8 +67,6 @@ let updateUser (name: string) (newName: string) =
                 hint = None }
             ]
     }
-
-
 let deleteUser (name: string) =
     delete "users" {
         deletes
@@ -74,17 +77,6 @@ let deleteUser (name: string) =
                comment = None }
         ]
     }
-
-// Define a function to construct a message to print
-let getUsersOverAge (age: int) =
-    find "users" {
-        // equivalent to a mongo query filter
-        // { age: { $gt: 10} }
-        filter {| age = {| ``$gt``= age |} |}
-        limit 2
-        skip 1
-    }
-
 [<EntryPoint>]
 let main argv =
     let client = MongoClient("mongodb://localhost:27017")
@@ -107,29 +99,39 @@ let main argv =
     let result = db.RunCommand<DeleteResult>(JsonCommand deletecmd)
     printfn $"DeleteResult: %A{result}"
 
-    0 // return an integer exit code// return an integer exit code
+    0
 ```
 
 If you want to see what else is available check the `samples` directory
 
-> Thanks for the early feedback in twitter from Isaac, Zaid, Alexey, Alexander, and the F# community
-> you can follow it on the first [issue](https://github.com/AngelMunoz/Mondocks/issues/1)
+# Documentation
 
-### Goals
+Right now the documentation is provided via .NET Interactive notebooks.
+There are three ways ways to ineract with it
+
+- The [Notebooks](https://github.com/AngelMunoz/Mondocks/tree/main/notebooks) directory contains jupyter notebooks that you can download and open them with the [VSCode Extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.dotnet-interactive-vscode) to interact with them in real time.
+- If you don't want to download anything you can still check the notebooks online, click on [![Binder](https://notebooks.gesis.org/binder/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/AngelMunoz/Mondocks/HEAD) to go to the binder website and check the notebooks online
+
+- If your editor supports doc comments, you should be able to see samples as well, part of the source code is documented that way, you should even see examples in the editor tooltips in some cases
+
+# Goals
 
 - Emit 100% compatible json with https://docs.mongodb.com/manual/reference/command/ and https://docs.mongodb.com/manual/reference/mongodb-extended-json
 - Provide Tools that are familiar from those who come from other environments to be productive since day 1
 - Provide Types to ease the transition between command execution and it's return types
 - Provide CE's to generate sub types of the main command definitions (e.g. index)
 
-### Non Eequired Extras
+## Non Eequired Extras
 
 - provide helpers to write different syntax (e.g. `filter (fun m -> m.prop = value)`, `filter ("prop" gt 10)`)
 
-### Non Goals
+## Non Goals
 
 - Convert this into a document mapper
 - Provide 100% of the mongo commands
 - Provide a 100% F# idiomatic solution
 
 This is a work in progress, you can help providing feedback about it's usage
+
+> Thanks for the early feedback in twitter from Isaac, Zaid, Alexey, Alexander, and the F# community
+> you can follow it on the first [issue](https://github.com/AngelMunoz/Mondocks/issues/1)
