@@ -1,7 +1,5 @@
 ﻿namespace Mondocks
 
-open System
-open System.Collections.Generic
 open Mondocks.Types
 
 module Aggregation =
@@ -195,3 +193,140 @@ module Aggregation =
         /// <param name="collection">The name of the collection to perform this query against</param>
         /// <returns>returns a <see cref="Mondocks.Aggregation.Distinct.DistinctCommandBuilder">DistinctCommandBuilder</see></returns>
         let distinct (collection: string) = DistinctCommandBuilder(collection)
+
+    [<AutoOpen>]
+    module Aggregate =
+        type AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern> =
+            { aggregate: obj
+              pipeline: obj seq
+              explain: Option<bool>
+              allowDiskUse: Option<bool>
+              cursor: Option<{| batchSize: int |}>
+              maxTimeMS: Option<int>
+              bypassDocumentValidation: Option<bool>
+              readConcern: Option<'ReadConcern>
+              collation: Option<Collation>
+              hint: Option<'Hint>
+              comment: Option<'Comment>
+              writeConcern: Option<'WriteConcern> }
+
+            interface IBuilder with
+                member __.ToJSON() = Json.Serialize __
+
+        type AggregateCommandBuilder() =
+            let mutable aggregate = box 1
+
+            member __.Aggregate
+                with get () = aggregate
+                and set (value) = aggregate <- value
+
+            new(name: string) as this =
+                AggregateCommandBuilder()
+                then this.Aggregate <- box name
+
+            member __.Yield _ =
+                { aggregate = __.Aggregate
+                  pipeline = []
+                  explain = None
+                  allowDiskUse = None
+                  cursor = Some {| batchSize = 0 |}
+                  maxTimeMS = None
+                  bypassDocumentValidation = None
+                  readConcern = None
+                  collation = None
+                  hint = None
+                  comment = None
+                  writeConcern = None }
+
+            member __.Run(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>) =
+                (state :> IBuilder).ToJSON()
+
+            /// <summary>
+            /// An array of aggregation pipeline stages that process and transform the document stream as part of the aggregation pipeline.
+            /// </summary>
+            /// <example>
+            ///     aggregate "users" {
+            ///       // gets all of the distinc emails from users named "Frank"
+            ///       pipeline [
+            ///          box {| ``$project`` = {| Price = 1; Tag = 1 |} |}
+            ///          box {| ``$group`` =
+            ///                     {| _id = "$Tag";
+            ///                        items = {| ``$sum`` = 1 |};
+            ///                        total = {| ``$sum`` = "$Price" |}
+            ///                     |}
+            ///              |}
+            ///       ]
+            ///     }
+            /// </example>
+            [<CustomOperation("pipeline")>]
+            member __.Pipeline(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, pipeline: obj seq) =
+                { state with pipeline = pipeline }
+
+            /// <summary>
+            /// Optional. Specifies to return the information on the processing of the pipeline.
+            /// Not available in multi-document transactions.
+            /// ***NOTE***: If you use this don't use <see cref="Mondocks.Types.FindResult">FindResult</see>
+            /// use instead <see cref="MongoDB.Bson.BsonDocument">BsonDocument</see> as the result of RunCommand or RunCommandAsync
+            /// since using explain will bring back a higly dynamic document
+            /// </summary>
+            [<CustomOperation("explain")>]
+            member __.Explain(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, explain: bool) =
+                { state with explain = Some explain }
+
+            [<CustomOperation("allow_disk_use")>]
+            member __.AllowDiskUse(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+                                   allowDiskUse: bool) =
+                { state with
+                      allowDiskUse = Some allowDiskUse }
+
+            [<CustomOperation("cursor_batch_size")>]
+            member __.Cursor(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, cursorBatchSize: int) =
+                { state with
+                      cursor = Some {| batchSize = cursorBatchSize |} }
+
+            [<CustomOperation("max_time_ms")>]
+            member __.MaxtimeMs(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, maxTimeMs: int) =
+                { state with
+                      maxTimeMS = Some maxTimeMs }
+
+            [<CustomOperation("bypass_document_validation")>]
+            member __.BypassDocumentValidation(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+                                               bypassDocumentValidation: bool) =
+                { state with
+                      bypassDocumentValidation = Some bypassDocumentValidation }
+
+            [<CustomOperation("read_concern")>]
+            member __.ReadConcern(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+                                  readConcern: 'ReadConcern) =
+                { state with
+                      readConcern = Some readConcern }
+
+            [<CustomOperation("collation")>]
+            member __.Collation(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+                                collation: Collation) =
+                { state with
+                      collation = Some collation }
+
+            [<CustomOperation("hint")>]
+            member __.Hint(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, hint: 'Hint) =
+                { state with hint = Some hint }
+
+            [<CustomOperation("comment")>]
+            member __.Comment(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, comment: 'Comment) =
+                { state with comment = Some comment }
+
+            [<CustomOperation("write_concern")>]
+            member __.WriteConcern(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+                                   writeConcern: 'WriteConcern) =
+                { state with
+                      writeConcern = Some writeConcern }
+
+        /// <summary>Creates an aggregate command that will work against the specified collection</summary>
+        /// <param name="collection">The name of the collection to perform this query against</param>
+        /// <returns>returns a <see cref="Mondocks.Aggregation.Aggregate.AggregateCommandBuilder">AggregateCommandBuilder</see></returns>
+        let aggregate (collection: string) = AggregateCommandBuilder(collection)
+
+        /// <summary>Creates an aggregate command that is <a href="https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields">agnostic to collections</a></summary>
+        /// <param name="collection">The name of the collection to perform this query against</param>
+        /// <returns>returns a <see cref="Mondocks.Aggregation.Aggregate.AggregateCommandBuilder">AggregateCommandBuilder</see></returns>
+        let aggregateAgnostic = AggregateCommandBuilder()
