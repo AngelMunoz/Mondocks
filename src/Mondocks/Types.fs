@@ -159,7 +159,7 @@ module Builders =
 
 
         [<CustomOperation("query")>]
-        member __.Query(state: UpdateQuery<'Query, 'Update, 'Hint>, query: 'Delete) = { state with q = query }
+        member __.Query(state: UpdateQuery<'Query, 'Update, 'Hint>, query: 'Query) = { state with q = query }
 
         [<CustomOperation("update")>]
         member __.Update(state: UpdateQuery<'Query, 'Update, 'Hint>, update: 'Update) = { state with u = update }
