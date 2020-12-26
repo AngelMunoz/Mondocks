@@ -121,7 +121,7 @@ There are three ways ways to ineract with it
 - Provide Types to ease the transition between command execution and it's return types
 - Provide CE's to generate sub types of the main command definitions (e.g. index)
 
-## Non Eequired Extras
+## Non Required Extras
 
 - provide helpers to write different syntax (e.g. `filter (fun m -> m.prop = value)`, `filter ("prop" gt 10)`)
 
