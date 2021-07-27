@@ -1,0 +1,19 @@
+{
+  "name": "expressive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Program.mjs",
+  "type": "module",
+  "scripts": {
+    "prestart": "dotnet fable --extension .mjs",
+    "start": "node ./Program.mjs"
+  },
+  "dependencies": {
+    "express": "~4.17.1",
+    "body-parser": "~1.19.0",
+    "mongodb": "~4.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
