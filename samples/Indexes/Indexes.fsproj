@@ -10,8 +10,8 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.11.4" />
-    <ProjectReference Include="..\..\src\Mondocks\Mondocks.fsproj" />
+    <PackageReference Include="MongoDB.Driver" Version="2.13.0" />
+    <ProjectReference Include="..\..\src\Mondocks.Net\Mondocks.Net.fsproj" />
   </ItemGroup>
 
 </Project>
