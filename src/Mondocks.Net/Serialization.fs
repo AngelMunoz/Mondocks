@@ -1,11 +1,6 @@
-namespace Mondocks
+﻿namespace Mondocks.Net
 
-open System.Text.RegularExpressions
-
-type IBuilder =
-    abstract ToJSON: unit -> string
-
-module internal Json =
+module Json =
     open System
     open System.Text.Json
     open System.Text.Json.Serialization
@@ -31,7 +26,9 @@ module internal Json =
                 JsonSerializer.Deserialize<{| ``$date``: {| ``$numberLong``: string |} |}>(reader.GetString())
 
             DateTimeOffset
-                .FromUnixTimeMilliseconds(deserialized.``$date``.``$numberLong`` |> int64)
+                .FromUnixTimeMilliseconds(
+                    deserialized.``$date``.``$numberLong`` |> int64
+                )
                 .Date
 
         override _.Write(writer: Utf8JsonWriter, value: DateTime, options: JsonSerializerOptions) =
@@ -124,7 +121,6 @@ module internal Json =
             writer.WriteStringValue(stringValue)
             writer.WriteEndObject()
 
-
     type Int32Converter() =
         inherit JsonConverter<int32>()
 
@@ -142,40 +138,6 @@ module internal Json =
             writer.WriteStringValue(stringValue)
             writer.WriteEndObject()
 
-    type RegexConverter() =
-        inherit JsonConverter<Regex>()
-
-        override _.Read(reader: byref<Utf8JsonReader>, typeToConvert: Type, options: JsonSerializerOptions) =
-            let deserialized =
-                JsonSerializer.Deserialize<{| ``$regularExpression``: {| ``$pattern``: string
-                                                                         ``$options``: string |} |}>
-                    (reader.GetString())
-
-            match deserialized.``$regularExpression``.``$options``
-                  |> ValueOption.ofObj with
-            | ValueSome options ->
-                Regex
-                    (deserialized.``$regularExpression``.``$pattern``,
-                     RegexOptions.Parse(typeof<RegexOptions>, options) :?> RegexOptions)
-            | ValueNone -> Regex(deserialized.``$regularExpression``.``$pattern``)
-
-        override _.Write(writer: Utf8JsonWriter, value: Regex, options: JsonSerializerOptions) =
-            let stringValue = value |> string
-
-            writer.WriteStartObject() //
-            writer.WritePropertyName("$regularExpression")
-            writer.WriteStartObject() // //
-            writer.WritePropertyName("$pattern") // //
-            writer.WriteStringValue(value.ToString()) // //
-            writer.WriteEndObject() // //
-            writer.WriteStartObject() // //
-            writer.WritePropertyName("$options") // //
-            writer.WriteStringValue(value.Options.ToString()) // //
-            writer.WriteEndObject() // //
-            writer.WriteEndObject() //
-
-
-
     let private defaults =
         let options = JsonSerializerOptions()
         options.Converters.Add(JsonFSharpConverter())
@@ -186,9 +148,12 @@ module internal Json =
         options.Converters.Add(DoubleConverter())
         options.Converters.Add(Int64Converter())
         options.Converters.Add(Int32Converter())
-        options.Converters.Add(RegexConverter())
         options.IgnoreNullValues <- true
         options
 
-    let Serialize<'T> (value: 'T) =
-        JsonSerializer.Serialize<'T>(value, defaults)
+    type Serializer() =
+        static member Serialize<'T>(value: 'T) =
+            JsonSerializer.Serialize<'T>(value, defaults)
+
+        static member Serialize<'T>(value: 'T, options) =
+            JsonSerializer.Serialize<'T>(value, options)

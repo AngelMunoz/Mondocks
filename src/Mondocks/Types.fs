@@ -1,7 +1,27 @@
 namespace Mondocks.Types
 
-open MongoDB.Bson.Serialization.Attributes
-open Mondocks
+open System
+
+type SerializerFn = obj -> string
+
+type CountResult = { n: int; ok: float }
+type DistinctResult<'TValue> = { values: seq<'TValue>; ok: float }
+
+type CreateIndexResult =
+    { createdCollectionAutomatically: bool
+      numIndexesBefore: int
+      numIndexesAfter: int
+      ok: float }
+
+type DropIndexResult = { nIndexesWas: int; ok: float }
+type InsertResult = { n: int; ok: float }
+
+type FindResult<'T> =
+    { cursor: {| firstBatch: seq<'T>; ns: string |}
+      ok: float }
+
+type UpdateResult = { n: int; nModified: int; ok: float }
+type DeleteResult = { n: int; ok: float }
 
 type Collation =
     { locale: string
@@ -13,8 +33,6 @@ type Collation =
       maxVariable: Option<bool>
       backwards: Option<bool> }
 
-    interface IBuilder with
-        member __.ToJSON() = Json.Serialize __
 
 type DeleteQuery<'Delete, 'Hint, 'Comment> =
     { /// that represents the matching criteria
@@ -25,8 +43,6 @@ type DeleteQuery<'Delete, 'Hint, 'Comment> =
       hint: Option<'Hint>
       comment: Option<'Comment> }
 
-    interface IBuilder with
-        member __.ToJSON() = Json.Serialize __
 
 type UpdateQuery<'Query, 'Update, 'Hint> =
     { /// the matching criteria
@@ -40,33 +56,9 @@ type UpdateQuery<'Query, 'Update, 'Hint> =
       arrayFilters: Option<seq<obj>>
       hint: 'Hint }
 
-[<BsonIgnoreExtraElementsAttribute>]
-type Cursor<'T> = { firstBatch: seq<'T>; ns: string }
-
-type FindResult<'T> = { cursor: Cursor<'T>; ok: float }
-
-[<BsonIgnoreExtraElements>]
-type InsertResult = { n: int; ok: float }
-
-type UpdateResult = { n: int; nModified: int; ok: float }
-type DeleteResult = { n: int; ok: float }
-
-[<BsonIgnoreExtraElements>]
-type CreateIndexResult =
-    { createdCollectionAutomatically: bool
-      numIndexesBefore: int
-      numIndexesAfter: int
-      ok: float }
-
-[<BsonIgnoreExtraElements>]
-type DropIndexResult = { nIndexesWas: int; ok: float }
-
-type CountResult = { n: int; ok: float }
-
-type DistinctResult<'TValue> = { values: seq<'TValue>; ok: float }
-
+[<Obsolete("This module is deprecated and will be removed on a future release, please use `Mondocks.Types.Extras`")>]
 module Builders =
-
+    [<Obsolete("This construct has moved to the `Mondocks.Types.Extras` namespace")>]
     type CollationBuilder(locale: string) =
 
         member __.Yield _ =
@@ -114,11 +106,10 @@ module Builders =
             { state with
                   backwards = Some backwards }
 
-
-
+    [<Obsolete("This construct has moved to the `Mondocks.Types.Extras` namespace")>]
     type DeleteQueryBuilder() =
         member __.Yield _ =
-            { q = {|  |}
+            { q = Unchecked.defaultof<_> ()
               limit = 0
               collation = None
               hint = None
@@ -145,10 +136,11 @@ module Builders =
         member __.Comment(state: DeleteQuery<'Delete, 'Hint, 'Comment>, comment: 'Comment) =
             { state with comment = Some comment }
 
+    [<Obsolete("This construct has moved to the `Mondocks.Types.Extras` namespace")>]
     type UpdateQueryBuilder() =
         member __.Yield _ =
-            { q = {|  |}
-              u = {|  |}
+            { q = Unchecked.defaultof<_> ()
+              u = Unchecked.defaultof<_> ()
               upsert = None
               multi = None
               collation = None
@@ -186,8 +178,3 @@ module Builders =
 
         [<CustomOperation("hint")>]
         member __.Hint(state: UpdateQuery<'Query, 'Update, 'Hint>, hint: 'Hint) = { state with hint = hint }
-
-
-    let collation (locale: string) = CollationBuilder(locale)
-    let deletequery = DeleteQueryBuilder()
-    let updatequery = UpdateQueryBuilder()
