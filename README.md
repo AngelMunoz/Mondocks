@@ -6,7 +6,9 @@
 [![Binder](https://notebooks.gesis.org/binder/badge_logo.svg)](https://notebooks.gesis.org/binder/v2/gh/AngelMunoz/Mondocks/HEAD)
 
 > ```
-> dotnet add package Mondocks
+> dotnet add package Mondocks.Net
+> # or for fable/nodejs
+> dotnet add package Mondocks.Fable
 > ```
 
 > This library is based on the mongodb extended json spec and mongodb manual reference
