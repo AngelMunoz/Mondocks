@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net5.0;netstandard2.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarnOn>3390;$(WarnOn)</WarnOn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Serialization.fs" />
+    <Compile Include="Aggregation.fs" />
+    <Compile Include="Database.fs" />
+    <Compile Include="Query.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="*.fsproj; *.fs; *.js;" Exclude="**\*.fs.js; **\*.mjs" PackagePath="fable\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Fable.Core" Version="3.2.8" />
+    <ProjectReference Include="..\Mondocks\Mondocks.fsproj" />
+  </ItemGroup>
+
+</Project>
