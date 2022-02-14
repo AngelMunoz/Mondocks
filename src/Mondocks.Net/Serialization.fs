@@ -138,9 +138,17 @@ module Json =
             writer.WriteStringValue(stringValue)
             writer.WriteEndObject()
 
+    type BsonNullConverter() =
+        inherit JsonConverter<BsonNull>()
+        override _.Read(reader: byref<Utf8JsonReader>, typeToConvert: Type, options: JsonSerializerOptions) =
+            BsonNull.Value
+
+        override _.Write(writer: Utf8JsonWriter, value: BsonNull, options: JsonSerializerOptions) =
+            writer.WriteNullValue()
+
     let private defaults =
         let options = JsonSerializerOptions()
-        options.Converters.Add(JsonFSharpConverter())
+        options.DefaultIgnoreCondition <- JsonIgnoreCondition.WhenWritingDefault
         options.Converters.Add(ObjectIdConverter())
         options.Converters.Add(DateTimeConverter())
         options.Converters.Add(DateTimeOffsetConverter())
@@ -148,12 +156,12 @@ module Json =
         options.Converters.Add(DoubleConverter())
         options.Converters.Add(Int64Converter())
         options.Converters.Add(Int32Converter())
-        options.IgnoreNullValues <- true
+        options.Converters.Add(BsonNullConverter())
         options
 
     type Serializer() =
         static member Serialize<'T>(value: 'T) =
             JsonSerializer.Serialize<'T>(value, defaults)
 
-        static member Serialize<'T>(value: 'T, options) =
+        static member Serialize<'T>(value: 'T, options: JsonSerializerOptions) =
             JsonSerializer.Serialize<'T>(value, options)
