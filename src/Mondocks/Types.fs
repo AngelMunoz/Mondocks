@@ -35,26 +35,30 @@ type Collation =
 
 
 type DeleteQuery<'Delete, 'Hint, 'Comment> =
-    { /// that represents the matching criteria
-      q: 'Delete
-      /// amount of documents to delete. use `0` to delete all matching criteria
-      limit: int
-      collation: Option<Collation>
-      hint: Option<'Hint>
-      comment: Option<'Comment> }
+    {
+        /// that represents the matching criteria
+        q: 'Delete
+        /// amount of documents to delete. use `0` to delete all matching criteria
+        limit: int
+        collation: Option<Collation>
+        hint: Option<'Hint>
+        comment: Option<'Comment>
+    }
 
 
 type UpdateQuery<'Query, 'Update, 'Hint> =
-    { /// the matching criteria
-      q: 'Query
-      /// A document or update pipeline
-      u: 'Update
-      upsert: Option<bool>
-      multi: Option<bool>
-      collation: Option<Collation>
-      /// An array of filter documents that determines which array elements to modify for an update operation on an array field.
-      arrayFilters: Option<seq<obj>>
-      hint: 'Hint }
+    {
+        /// the matching criteria
+        q: 'Query
+        /// A document or update pipeline
+        u: 'Update
+        upsert: Option<bool>
+        multi: Option<bool>
+        collation: Option<Collation>
+        /// An array of filter documents that determines which array elements to modify for an update operation on an array field.
+        arrayFilters: Option<seq<obj>>
+        hint: 'Hint
+    }
 
 [<Obsolete("This module is deprecated and will be removed on a future release, please use `Mondocks.Types.Extras`")>]
 module Builders =
@@ -75,36 +79,30 @@ module Builders =
 
         [<CustomOperation("case_level")>]
         member __.CaseLevel(state: Collation, caseLevel: bool) =
-            { state with
-                  caseLevel = Some caseLevel }
+            { state with caseLevel = Some caseLevel }
 
         [<CustomOperation("case_first")>]
         member __.CaseFirst(state: Collation, caseFirst: bool) =
-            { state with
-                  caseFirst = Some caseFirst }
+            { state with caseFirst = Some caseFirst }
 
         [<CustomOperation("strength")>]
         member __.Strength(state: Collation, strength: bool) = { state with strength = Some strength }
 
         [<CustomOperation("numeric_ordering")>]
         member __.NumericOrdering(state: Collation, numericOrdering: bool) =
-            { state with
-                  numericOrdering = Some numericOrdering }
+            { state with numericOrdering = Some numericOrdering }
 
         [<CustomOperation("alternate")>]
         member __.Alternate(state: Collation, alternate: bool) =
-            { state with
-                  alternate = Some alternate }
+            { state with alternate = Some alternate }
 
         [<CustomOperation("max_variable")>]
         member __.MaxVariable(state: Collation, maxVariable: bool) =
-            { state with
-                  maxVariable = Some maxVariable }
+            { state with maxVariable = Some maxVariable }
 
         [<CustomOperation("backwards")>]
         member __.Backwards(state: Collation, backwards: bool) =
-            { state with
-                  backwards = Some backwards }
+            { state with backwards = Some backwards }
 
     [<Obsolete("This construct has moved to the `Mondocks.Types.Extras` namespace")>]
     type DeleteQueryBuilder() =
@@ -126,8 +124,7 @@ module Builders =
 
         [<CustomOperation("collation")>]
         member __.Collation(state: DeleteQuery<'Delete, 'Hint, 'Comment>, collation: Collation) =
-            { state with
-                  collation = Some collation }
+            { state with collation = Some collation }
 
         [<CustomOperation("hint")>]
         member __.Hint(state: DeleteQuery<'Delete, 'Hint, 'Comment>, hint: 'Hint) = { state with hint = Some hint }
@@ -164,14 +161,12 @@ module Builders =
 
         [<CustomOperation("collation")>]
         member __.Collation(state: UpdateQuery<'Query, 'Update, 'Hint>, collation: Collation) =
-            { state with
-                  collation = Some collation }
+            { state with collation = Some collation }
 
 
         [<CustomOperation("array_filters")>]
         member __.ArrayFilters(state: UpdateQuery<'Query, 'Update, 'Hint>, arrayFilters: obj seq) =
-            { state with
-                  arrayFilters = Some arrayFilters }
+            { state with arrayFilters = Some arrayFilters }
 
         member this.ArrayFilters(state: UpdateQuery<'Query, 'Update, 'Hint>, arrayFilters: 'T seq) =
             this.ArrayFilters(state, arrayFilters |> Seq.map box)

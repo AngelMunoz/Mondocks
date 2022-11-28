@@ -1,6 +1,8 @@
 namespace Mondocks.Queries
 
 open Mondocks.Net.Json
+open System.Runtime.InteropServices
+open System.Text.Json
 
 [<AutoOpen>]
 module Query =

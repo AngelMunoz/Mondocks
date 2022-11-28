@@ -18,7 +18,9 @@ type CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment> =
 
 type CountCommandBuilder(serialize: SerializerFn) =
 
-    member __.Yield _ =
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { count = ""
           query = None
           limit = None
@@ -28,7 +30,7 @@ type CountCommandBuilder(serialize: SerializerFn) =
           collation = None
           comment = None }
 
-    member __.Run(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>) = serialize state
+    member inline this.Run(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>) = this.Serialize state
 
     ///<summary>The name of the collection  to query against</summary>
     /// <example>
@@ -38,7 +40,7 @@ type CountCommandBuilder(serialize: SerializerFn) =
     ///    }
     /// </example>
     [<CustomOperation("collection")>]
-    member __.Count(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, count: string) =
+    member inline __.Count(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, count: string) =
         { state with count = count }
 
     /// <summary>
@@ -52,7 +54,7 @@ type CountCommandBuilder(serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("query")>]
-    member __.Query(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, query: 'TDocument) =
+    member inline __.Query(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, query: 'TDocument) =
         { state with query = Some query }
 
     /// <summary>
@@ -69,7 +71,7 @@ type CountCommandBuilder(serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("limit")>]
-    member __.Limit(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, limit: int) =
+    member inline __.Limit(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, limit: int) =
         { state with limit = Some limit }
 
     /// <summary>
@@ -86,20 +88,19 @@ type CountCommandBuilder(serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("skip")>]
-    member __.Skip(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, skip: int) =
+    member inline __.Skip(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, skip: int) =
         { state with skip = Some skip }
 
     [<CustomOperation("hint")>]
-    member __.Hint(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, hint: 'Hint) =
+    member inline __.Hint(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, hint: 'Hint) =
         { state with hint = Some hint }
 
     [<CustomOperation("collation")>]
-    member __.Collation(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, collation: Collation) =
-        { state with
-              collation = Some collation }
+    member inline __.Collation(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, collation: Collation) =
+        { state with collation = Some collation }
 
     [<CustomOperation("comment")>]
-    member __.Comment(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, comment: 'Comment) =
+    member inline __.Comment(state: CountCommand<'TDocument, 'Hint, 'ReadConcern, 'Comment>, comment: 'Comment) =
         { state with comment = Some comment }
 
 
@@ -118,7 +119,11 @@ type DistinctCommand<'TDocument, 'ReadConcern, 'Comment> =
 
 type DistinctCommandBuilder(collection: string, serialize: SerializerFn) =
 
-    member __.Yield _ =
+    member val Collection: string = collection
+
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { distinct = ""
           key = ""
           query = None
@@ -126,8 +131,8 @@ type DistinctCommandBuilder(collection: string, serialize: SerializerFn) =
           collation = None
           comment = None }
 
-    member __.Run(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>) =
-        serialize { state with distinct = collection }
+    member inline this.Run(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>) =
+        this.Serialize { state with distinct = this.Collection }
 
     /// <summary>
     /// A key used to retreive values from the query result documents
@@ -138,7 +143,8 @@ type DistinctCommandBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("key")>]
-    member __.Key(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, key: string) = { state with key = key }
+    member inline __.Key(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, key: string) =
+        { state with key = key }
 
     /// <summary>
     /// Optional. A filter to query against the collection
@@ -151,21 +157,23 @@ type DistinctCommandBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("query")>]
-    member __.Query(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, query: 'TDocument) =
+    member inline __.Query(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, query: 'TDocument) =
         { state with query = Some query }
 
     [<CustomOperation("read_concern")>]
-    member __.ReadConcern(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, readConcern: 'ReadConcern) =
-        { state with
-              readConcern = Some readConcern }
+    member inline __.ReadConcern
+        (
+            state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>,
+            readConcern: 'ReadConcern
+        ) =
+        { state with readConcern = Some readConcern }
 
     [<CustomOperation("collation")>]
-    member __.Collation(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, collation: Collation) =
-        { state with
-              collation = Some collation }
+    member inline __.Collation(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, collation: Collation) =
+        { state with collation = Some collation }
 
     [<CustomOperation("collation")>]
-    member __.Comment(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, comment: 'Comment) =
+    member inline __.Comment(state: DistinctCommand<'TDocument, 'ReadConcern, 'Comment>, comment: 'Comment) =
         { state with comment = Some comment }
 
 type AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern> =
@@ -184,8 +192,11 @@ type AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern> =
 
 type AggregateCommandBuilder(aggregate: string, serialize: SerializerFn) =
 
-    member __.Yield _ =
-        { aggregate = aggregate
+    member val Aggregate: string = aggregate
+    member val Serialize: SerializerFn = serialize
+
+    member inline this.Yield _ =
+        { aggregate = this.Aggregate
           pipeline = []
           explain = None
           allowDiskUse = None
@@ -198,7 +209,7 @@ type AggregateCommandBuilder(aggregate: string, serialize: SerializerFn) =
           comment = None
           writeConcern = None }
 
-    member __.Run(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>) = serialize state
+    member inline this.Run(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>) = this.Serialize state
 
     /// <summary>
     /// An array of aggregation pipeline stages that process and transform the document stream as part of the aggregation pipeline.
@@ -218,7 +229,11 @@ type AggregateCommandBuilder(aggregate: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("pipeline")>]
-    member __.Pipeline(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, pipeline: obj seq) =
+    member inline __.Pipeline
+        (
+            state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+            pipeline: obj seq
+        ) =
         { state with pipeline = pipeline }
 
     /// <summary>
@@ -229,60 +244,65 @@ type AggregateCommandBuilder(aggregate: string, serialize: SerializerFn) =
     /// since using explain will bring back a higly dynamic document
     /// </summary>
     [<CustomOperation("explain")>]
-    member __.Explain(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, explain: bool) =
+    member inline __.Explain(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, explain: bool) =
         { state with explain = Some explain }
 
     [<CustomOperation("allow_disk_use")>]
-    member __.AllowDiskUse(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, allowDiskUse: bool) =
-        { state with
-              allowDiskUse = Some allowDiskUse }
+    member inline __.AllowDiskUse
+        (
+            state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+            allowDiskUse: bool
+        ) =
+        { state with allowDiskUse = Some allowDiskUse }
 
     [<CustomOperation("cursor_batch_size")>]
-    member __.Cursor(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, cursorBatchSize: int) =
-        { state with
-              cursor = Some {| batchSize = cursorBatchSize |} }
+    member inline __.Cursor
+        (
+            state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+            cursorBatchSize: int
+        ) =
+        { state with cursor = Some {| batchSize = cursorBatchSize |} }
 
     [<CustomOperation("max_time_ms")>]
-    member __.MaxtimeMs(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, maxTimeMs: int) =
-        { state with
-              maxTimeMS = Some maxTimeMs }
+    member inline __.MaxtimeMs(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, maxTimeMs: int) =
+        { state with maxTimeMS = Some maxTimeMs }
 
     [<CustomOperation("bypass_document_validation")>]
-    member __.BypassDocumentValidation
+    member inline __.BypassDocumentValidation
         (
             state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
             bypassDocumentValidation: bool
         ) =
-        { state with
-              bypassDocumentValidation = Some bypassDocumentValidation }
+        { state with bypassDocumentValidation = Some bypassDocumentValidation }
 
     [<CustomOperation("read_concern")>]
-    member __.ReadConcern
+    member inline __.ReadConcern
         (
             state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
             readConcern: 'ReadConcern
         ) =
-        { state with
-              readConcern = Some readConcern }
+        { state with readConcern = Some readConcern }
 
     [<CustomOperation("collation")>]
-    member __.Collation(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, collation: Collation) =
-        { state with
-              collation = Some collation }
+    member inline __.Collation
+        (
+            state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
+            collation: Collation
+        ) =
+        { state with collation = Some collation }
 
     [<CustomOperation("hint")>]
-    member __.Hint(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, hint: 'Hint) =
+    member inline __.Hint(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, hint: 'Hint) =
         { state with hint = Some hint }
 
     [<CustomOperation("comment")>]
-    member __.Comment(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, comment: 'Comment) =
+    member inline __.Comment(state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>, comment: 'Comment) =
         { state with comment = Some comment }
 
     [<CustomOperation("write_concern")>]
-    member __.WriteConcern
+    member inline __.WriteConcern
         (
             state: AggregateCommand<'ReadConcern, 'Hint, 'Comment, 'WriteConcern>,
             writeConcern: 'WriteConcern
         ) =
-        { state with
-              writeConcern = Some writeConcern }
+        { state with writeConcern = Some writeConcern }

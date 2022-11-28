@@ -4,6 +4,7 @@ module Json =
     open System
     open System.Text.Json
     open System.Text.Json.Serialization
+    open System.Runtime.InteropServices
     open MongoDB.Bson
 
     type ObjectIdConverter() =
@@ -33,10 +34,7 @@ module Json =
 
         override _.Write(writer: Utf8JsonWriter, value: DateTime, options: JsonSerializerOptions) =
             let stringValue =
-                DateTimeOffset
-                    .op_Implicit(value)
-                    .ToUnixTimeMilliseconds()
-                |> string
+                DateTimeOffset.op_Implicit(value).ToUnixTimeMilliseconds() |> string
 
             writer.WriteStartObject()
             writer.WritePropertyName("$date")
@@ -140,6 +138,7 @@ module Json =
 
     type BsonNullConverter() =
         inherit JsonConverter<BsonNull>()
+
         override _.Read(reader: byref<Utf8JsonReader>, typeToConvert: Type, options: JsonSerializerOptions) =
             BsonNull.Value
 
@@ -147,8 +146,9 @@ module Json =
             writer.WriteNullValue()
 
     let private defaults =
-        let options = JsonSerializerOptions()
-        options.DefaultIgnoreCondition <- JsonIgnoreCondition.WhenWritingDefault
+        let options =
+            JsonSerializerOptions(DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)
+
         options.Converters.Add(ObjectIdConverter())
         options.Converters.Add(DateTimeConverter())
         options.Converters.Add(DateTimeOffsetConverter())
@@ -160,8 +160,5 @@ module Json =
         options
 
     type Serializer() =
-        static member Serialize<'T>(value: 'T) =
-            JsonSerializer.Serialize<'T>(value, defaults)
-
-        static member Serialize<'T>(value: 'T, options: JsonSerializerOptions) =
-            JsonSerializer.Serialize<'T>(value, options)
+        static member Serialize<'T>(value: 'T, [<Optional>] ?options: JsonSerializerOptions) =
+            JsonSerializer.Serialize<'T>(value, defaultArg options defaults)

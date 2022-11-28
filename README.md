@@ -116,6 +116,46 @@ There are three ways ways to ineract with it
 
 - If your editor supports doc comments, you should be able to see samples as well, part of the source code is documented that way, you should even see examples in the editor tooltips in some cases
 
+# Serialization
+
+This might be very important for you, in case the default serialization strategy doesn't work for you, you should be able to fall back to the core `Mondocks` library where the general abstractions are defined.
+
+For example in Fable we just use `JSON.stringify(value)`
+
+```fsharp
+module Json =
+    let Serialize value = toPlainJsObj value |> JSON.stringify
+
+module Aggregation =
+
+    let count = CountCommandBuilder(Json.Serialize)
+```
+
+and in .NET we use System.Text.Json
+
+```fsharp
+module Json =
+    // ... a bunch of converters ...
+    type Serializer() =
+        static member Serialize<'T>(value: 'T, [<Optional>] ?options: JsonSerializerOptions) =
+            JsonSerializer.Serialize<'T>(value, defaultArg options defaults)
+
+module Aggregation =
+    let count = CountCommandBuilder(Json.Serializer.Serialize)
+```
+
+If our current serialization strategy doesn't work for you (or want to support something like Thoth.Json), you may supply a serialization function for your builder
+
+```fsharp
+
+module MyAggregation =
+
+    let serialize (value: obj) =
+        // ... do the serialization thing ...
+
+    let myCount = CountCommandBuilder(fun value -> serialize value)
+```
+
 # Goals
 
 - Emit 100% compatible json with https://docs.mongodb.com/manual/reference/command/ and https://docs.mongodb.com/manual/reference/mongodb-extended-json
@@ -137,3 +177,11 @@ This is a work in progress, you can help providing feedback about it's usage
 
 > Thanks for the early feedback in twitter from Isaac, Zaid, Alexey, Alexander, and the F# community
 > you can follow it on the first [issue](https://github.com/AngelMunoz/Mondocks/issues/1)
+
+```
+
+```
+
+```
+
+```

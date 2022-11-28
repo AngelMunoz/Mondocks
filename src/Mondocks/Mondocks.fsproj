@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <!-- Build settings -->
-    <TargetFrameworks>netstandard2.0;net5.0;net6.0</TargetFrameworks>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
     <WarnOn>3390;$(WarnOn)</WarnOn>
