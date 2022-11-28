@@ -6,8 +6,7 @@ open Mondocks.Net.Json
 module Aggregation =
     /// <summary>Creates an count command for documents in the specified collection</summary>
     /// <returns>returns a <see cref="Mondocks.Aggregation.Count.CountCommandBuilder">CountCommandBuilder</see></returns>
-    let count =
-        CountCommandBuilder(Serializer.Serialize)
+    let count = CountCommandBuilder(Serializer.Serialize)
 
     /// <summary>Creates an update command for documents in the specified collection</summary>
     /// <param name="collection">The name of the collection to perform this query against</param>

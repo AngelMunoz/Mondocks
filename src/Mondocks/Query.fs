@@ -8,43 +8,44 @@ open Mondocks.Types
 /// </summary>
 type FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min> =
     {
-      /// Name of the collection where this find operation will be targeted
-      find: string
-      /// Optional object that is going to be used to filter
-      filter: Option<'Filter>
-      /// <summary>
-      ///  optional object to sort by property
-      /// </summary>
-      /// <example>
-      ///     Some {| ``$sort`` = {| name = 1; age = -1 |} |}
-      /// </example>
-      /// <example>
-      ///     None
-      /// </example>
-      sort: Option<'Sort>
-      /// <summary>A <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection">projection object</a></summary>
-      projection: Option<'Projection>
-      hint: Option<'Hint>
-      /// User for pagination
-      skip: Option<int>
-      /// User for pagination
-      limit: Option<int>
-      batchSize: Option<int>
-      singleBatch: Option<bool>
-      comment: Option<'Comment>
-      maxTimeMS: Option<int>
-      readConcern: Option<'ReadConcern>
-      max: Option<'Max>
-      min: Option<'Min>
-      returnKey: Option<bool>
-      showRecordId: Option<bool>
-      tailable: Option<bool>
-      oplogReplay: Option<bool>
-      noCursorTimeout: Option<bool>
-      awaitData: Option<bool>
-      allowPartialResults: Option<bool>
-      collation: Option<Collation>
-      allowDiskUse: Option<bool> }
+        /// Name of the collection where this find operation will be targeted
+        find: string
+        /// Optional object that is going to be used to filter
+        filter: Option<'Filter>
+        /// <summary>
+        ///  optional object to sort by property
+        /// </summary>
+        /// <example>
+        ///     Some {| ``$sort`` = {| name = 1; age = -1 |} |}
+        /// </example>
+        /// <example>
+        ///     None
+        /// </example>
+        sort: Option<'Sort>
+        /// <summary>A <a href="https://docs.mongodb.com/manual/reference/method/db.collection.find/#find-projection">projection object</a></summary>
+        projection: Option<'Projection>
+        hint: Option<'Hint>
+        /// User for pagination
+        skip: Option<int>
+        /// User for pagination
+        limit: Option<int>
+        batchSize: Option<int>
+        singleBatch: Option<bool>
+        comment: Option<'Comment>
+        maxTimeMS: Option<int>
+        readConcern: Option<'ReadConcern>
+        max: Option<'Max>
+        min: Option<'Min>
+        returnKey: Option<bool>
+        showRecordId: Option<bool>
+        tailable: Option<bool>
+        oplogReplay: Option<bool>
+        noCursorTimeout: Option<bool>
+        awaitData: Option<bool>
+        allowPartialResults: Option<bool>
+        collation: Option<Collation>
+        allowDiskUse: Option<bool>
+    }
 
 
 
@@ -53,57 +54,62 @@ type FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Ma
 ///   <a href="https://docs.mongodb.com/manual/reference/command/findAndModify/#findandmodify">Reference</a>
 /// </summary>
 type FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment> =
-    { /// name of the collection where this query is targeted at
-      findAndModify: string
-      /// An optional object that will be used as a filter for the query
-      query: Option<'Query>
-      /// <summary>
-      ///  optional object to sort by property
-      /// </summary>
-      /// <example>
-      ///    Some {| ``$sort`` = {| name = 1; age = -1 |} |}
-      /// </example>
-      /// <example>
-      ///    None
-      /// </example>
-      sort: Option<'Sort>
-      /// Optional property that indicates whether this document should be removed or not.
-      /// Must specify either the remove or the update field
-      remove: Option<bool>
-      /// Optional property that indicates the new values for the objects that match the query.
-      /// Must specify either the remove or the update field
-      update: Option<'Update>
-      /// optional
-      /// When true, returns the modified document rather than the original
-      ``new``: Option<bool>
-      /// <summary>
-      ///  A subset of fields to return. The fields document specifies an inclusion of a field with 1, as in
-      /// </summary>
-      /// <example>
-      ///    Some {| name = 1; password = 0 |}
-      /// </example>
-      /// <example>
-      ///    None
-      /// </example>
-      fields: Option<'Fields>
-      /// <summary>
-      /// Optional.
-      /// Used in conjunction with the update field.
-      /// Creates a new document if no documents match the query
-      /// Updates a single document that matches the query.
-      /// </summary>
-      upsert: Option<bool>
-      bypassDocumentValidation: Option<bool>
-      writeConcern: Option<'WriteConcern>
-      collation: Option<Collation>
-      arrayFilters: Option<seq<obj>>
-      hint: Option<'Hint>
-      comment: Option<'Comment> }
+    {
+        /// name of the collection where this query is targeted at
+        findAndModify: string
+        /// An optional object that will be used as a filter for the query
+        query: Option<'Query>
+        /// <summary>
+        ///  optional object to sort by property
+        /// </summary>
+        /// <example>
+        ///    Some {| ``$sort`` = {| name = 1; age = -1 |} |}
+        /// </example>
+        /// <example>
+        ///    None
+        /// </example>
+        sort: Option<'Sort>
+        /// Optional property that indicates whether this document should be removed or not.
+        /// Must specify either the remove or the update field
+        remove: Option<bool>
+        /// Optional property that indicates the new values for the objects that match the query.
+        /// Must specify either the remove or the update field
+        update: Option<'Update>
+        /// optional
+        /// When true, returns the modified document rather than the original
+        ``new``: Option<bool>
+        /// <summary>
+        ///  A subset of fields to return. The fields document specifies an inclusion of a field with 1, as in
+        /// </summary>
+        /// <example>
+        ///    Some {| name = 1; password = 0 |}
+        /// </example>
+        /// <example>
+        ///    None
+        /// </example>
+        fields: Option<'Fields>
+        /// <summary>
+        /// Optional.
+        /// Used in conjunction with the update field.
+        /// Creates a new document if no documents match the query
+        /// Updates a single document that matches the query.
+        /// </summary>
+        upsert: Option<bool>
+        bypassDocumentValidation: Option<bool>
+        writeConcern: Option<'WriteConcern>
+        collation: Option<Collation>
+        arrayFilters: Option<seq<obj>>
+        hint: Option<'Hint>
+        comment: Option<'Comment>
+    }
 
 
 type FindBuilder(collection: string, serialize: SerializerFn) =
 
-    member __.Yield _ =
+    member val Collection: string = collection
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { find = ""
           filter = None
           sort = None
@@ -132,8 +138,8 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
     /// <summary>
     /// Converts the query into a serialized string
     /// </summary>
-    member __.Run(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>) =
-        serialize { state with find = collection }
+    member inline this.Run(state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>) =
+        this.Serialize { state with find = this.Collection }
 
     /// <summary>
     ///  Optional object that is going to be used to filter the find query
@@ -145,7 +151,7 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("filter")>]
-    member __.WithFilter
+    member inline __.WithFilter
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             filter: 'Filter
@@ -164,7 +170,7 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("sort")>]
-    member __.WithSort
+    member inline __.WithSort
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             sort: 'Sort
@@ -183,16 +189,15 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("projection")>]
-    member __.WithProjection
+    member inline __.WithProjection
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             projection: 'Projection
         ) =
-        { state with
-              projection = Some projection }
+        { state with projection = Some projection }
 
     [<CustomOperation("hint")>]
-    member __.WithHint
+    member inline __.WithHint
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             hint: 'Hint
@@ -212,7 +217,7 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("skip")>]
-    member __.WithSkip
+    member inline __.WithSkip
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             skip: int
@@ -232,7 +237,7 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("limit")>]
-    member __.WithLimit
+    member inline __.WithLimit
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             limit: int
@@ -240,25 +245,23 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
         { state with limit = Some limit }
 
     [<CustomOperation("batch_size")>]
-    member __.WithBatchSize
+    member inline __.WithBatchSize
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             batch_size: int
         ) =
-        { state with
-              batchSize = Some batch_size }
+        { state with batchSize = Some batch_size }
 
     [<CustomOperation("single_batch")>]
-    member __.WithSingleBatch
+    member inline __.WithSingleBatch
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             singleBatch: bool
         ) =
-        { state with
-              singleBatch = Some singleBatch }
+        { state with singleBatch = Some singleBatch }
 
     [<CustomOperation("comment")>]
-    member __.WithComment
+    member inline __.WithComment
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             comment: 'Comment
@@ -266,25 +269,23 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
         { state with comment = Some comment }
 
     [<CustomOperation("max_time_ms")>]
-    member __.WithMaxTimeMS
+    member inline __.WithMaxTimeMS
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             maxTimeMs: int
         ) =
-        { state with
-              maxTimeMS = Some maxTimeMs }
+        { state with maxTimeMS = Some maxTimeMs }
 
     [<CustomOperation("read_concern")>]
-    member __.WithReadConcern
+    member inline __.WithReadConcern
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             readConcern: 'ReadConcern
         ) =
-        { state with
-              readConcern = Some readConcern }
+        { state with readConcern = Some readConcern }
 
     [<CustomOperation("max")>]
-    member __.WithMax
+    member inline __.WithMax
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             max: 'Max
@@ -292,7 +293,7 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
         { state with max = Some max }
 
     [<CustomOperation("min")>]
-    member __.WithMin
+    member inline __.WithMin
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             min: 'Min
@@ -300,25 +301,23 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
         { state with min = Some min }
 
     [<CustomOperation("return_key")>]
-    member __.WithReturnKey
+    member inline __.WithReturnKey
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             returnKey: bool
         ) =
-        { state with
-              returnKey = Some returnKey }
+        { state with returnKey = Some returnKey }
 
     [<CustomOperation("show_record_id")>]
-    member __.WithShowRecordId
+    member inline __.WithShowRecordId
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             showRecordId: bool
         ) =
-        { state with
-              showRecordId = Some showRecordId }
+        { state with showRecordId = Some showRecordId }
 
     [<CustomOperation("tailable")>]
-    member __.WithTailable
+    member inline __.WithTailable
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             tailable: bool
@@ -326,61 +325,59 @@ type FindBuilder(collection: string, serialize: SerializerFn) =
         { state with tailable = Some tailable }
 
     [<CustomOperation("oplog_replay")>]
-    member __.WithOplogReplay
+    member inline __.WithOplogReplay
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             oplogReplay: bool
         ) =
-        { state with
-              oplogReplay = Some oplogReplay }
+        { state with oplogReplay = Some oplogReplay }
 
     [<CustomOperation("no_cursor_timeout")>]
-    member __.WithNoCursorTimeout
+    member inline __.WithNoCursorTimeout
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             noCursorTimeOut: bool
         ) =
-        { state with
-              noCursorTimeout = Some noCursorTimeOut }
+        { state with noCursorTimeout = Some noCursorTimeOut }
 
     [<CustomOperation("await_data")>]
-    member __.WithAwaitData
+    member inline __.WithAwaitData
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             awaitData: bool
         ) =
-        { state with
-              awaitData = Some awaitData }
+        { state with awaitData = Some awaitData }
 
     [<CustomOperation("allow_partial_results")>]
-    member __.WithAllowPartialResults
+    member inline __.WithAllowPartialResults
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             awaitData: bool
         ) =
-        { state with
-              allowPartialResults = Some awaitData }
+        { state with allowPartialResults = Some awaitData }
 
     [<CustomOperation("collation")>]
-    member __.WithCollation
+    member inline __.WithCollation
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             collation: Collation
         ) =
-        { state with
-              collation = Some collation }
+        { state with collation = Some collation }
 
     [<CustomOperation("allow_disk_use")>]
-    member __.WithAllowDiskUse
+    member inline __.WithAllowDiskUse
         (
             state: FindCommand<'Filter, 'Sort, 'Projection, 'Hint, 'Comment, 'ReadConcern, 'Max, 'Min>,
             allowDiskUse: bool
         ) =
-        { state with
-              allowDiskUse = Some allowDiskUse }
+        { state with allowDiskUse = Some allowDiskUse }
 
 type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
-    member __.Yield _ =
+
+    member val Collection: string = collection
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { findAndModify = ""
           query = None
           sort = None
@@ -399,10 +396,10 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
     /// <summary>
     /// Converts the query into a serialized string
     /// </summary>
-    member __.Run(state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>) =
-        serialize
-            { state with
-                  findAndModify = collection }
+    member inline this.Run
+        (state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>)
+        =
+        this.Serialize { state with findAndModify = this.Collection }
 
     /// <summary>
     ///  Optional object that is going to be used to filter the findAndModify query
@@ -421,7 +418,7 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("query")>]
-    member __.WithQuery
+    member inline __.WithQuery
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             query: 'Query
@@ -441,25 +438,27 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("sort")>]
-    member __.WithSort
+    member inline __.WithSort
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             sort: 'Sort
         ) =
         { state with sort = Some sort }
+
     /// Optional. property that indicates whether this document should be removed or not.
     /// Must specify either the remove or the update field
     [<CustomOperation("remove")>]
-    member __.WithRemove
+    member inline __.WithRemove
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             remove: bool
         ) =
         { state with remove = Some remove }
+
     /// Optional. property that indicates the new values for the objects that match the query.
     /// Must specify either the remove or the update field
     [<CustomOperation("update")>]
-    member __.WithUpdate
+    member inline __.WithUpdate
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             update: 'Update
@@ -467,7 +466,7 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
         { state with update = Some update }
 
     [<CustomOperation("new")>]
-    member __.WithNew
+    member inline __.WithNew
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             withNew: bool
@@ -487,7 +486,7 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("fields")>]
-    member __.WithFields
+    member inline __.WithFields
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             fields: 'Fields
@@ -501,7 +500,7 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
     /// Updates a single document that matches the query.
     /// </summary>
     [<CustomOperation("upsert")>]
-    member __.WithUpsert
+    member inline __.WithUpsert
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             upsert: bool
@@ -509,44 +508,40 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
         { state with upsert = Some upsert }
 
     [<CustomOperation("bypass_document_validation")>]
-    member __.WithBypassDocumentValidation
+    member inline __.WithBypassDocumentValidation
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             bypassDocumentValidation: bool
         ) =
-        { state with
-              bypassDocumentValidation = Some bypassDocumentValidation }
+        { state with bypassDocumentValidation = Some bypassDocumentValidation }
 
     [<CustomOperation("write_concern")>]
-    member __.WithWriteConcern
+    member inline __.WithWriteConcern
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             writeConcern: 'WriteConcern
         ) =
-        { state with
-              writeConcern = Some writeConcern }
+        { state with writeConcern = Some writeConcern }
 
     [<CustomOperation("collation")>]
-    member __.WithCollation
+    member inline __.WithCollation
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             collation: Collation
         ) =
-        { state with
-              collation = Some collation }
+        { state with collation = Some collation }
 
 
     [<CustomOperation("array_filters")>]
-    member __.WithArrayFilters
+    member inline __.WithArrayFilters
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             arrayFilters: seq<obj>
         ) =
-        { state with
-              arrayFilters = Some arrayFilters }
+        { state with arrayFilters = Some arrayFilters }
 
     [<CustomOperation("hint")>]
-    member __.WithHint
+    member inline __.WithHint
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             hint: 'Hint
@@ -554,7 +549,7 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
         { state with hint = Some hint }
 
     [<CustomOperation("comment")>]
-    member __.WithComment
+    member inline __.WithComment
         (
             state: FindAndModifyCommand<'Query, 'Sort, 'Update, 'Fields, 'WriteConcern, 'Hint, 'Comment>,
             comment: 'Comment
@@ -562,22 +557,28 @@ type FindAndModifyBuilder(collection: string, serialize: SerializerFn) =
         { state with comment = Some comment }
 
 type DeleteCommand<'WriteConcern> =
-    { delete: string
-      /// criteria queries to match against the database
-      deletes: seq<obj>
-      ordered: Option<bool>
-      writeConcern: Option<'WriteConcern> }
+    {
+        delete: string
+        /// criteria queries to match against the database
+        deletes: seq<obj>
+        ordered: Option<bool>
+        writeConcern: Option<'WriteConcern>
+    }
 
 
 type DeleteBuilder(collection: string, serialize: SerializerFn) =
-    member __.Yield _ =
+
+    member val Collection: string = collection
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { delete = ""
           deletes = Seq.empty
           ordered = None
           writeConcern = None }
 
-    member __.Run(state: DeleteCommand<'WriteConcern>) =
-        serialize { state with delete = collection }
+    member inline this.Run(state: DeleteCommand<'WriteConcern>) =
+        this.Serialize { state with delete = this.Collection }
 
     /// <summary>
     ///  A sequence of anonymous record objects (boxed) that will be used
@@ -590,7 +591,8 @@ type DeleteBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("deletes")>]
-    member __.WithDeletes(state: DeleteCommand<'WriteConcern>, deletes: seq<obj>) = { state with deletes = deletes }
+    member inline __.WithDeletes(state: DeleteCommand<'WriteConcern>, deletes: seq<obj>) =
+        { state with deletes = deletes }
 
     /// <summary>
     ///  A sequence of <see cref="Mondocks.Types.DeleteQuery">DeleteQuery</see> objects that will be used
@@ -615,12 +617,12 @@ type DeleteBuilder(collection: string, serialize: SerializerFn) =
         this.WithDeletes(state, deletes |> Seq.map box)
 
     [<CustomOperation("ordered")>]
-    member __.WithOrdered(state: DeleteCommand<'WriteConcern>, ordered: bool) = { state with ordered = Some ordered }
+    member inline __.WithOrdered(state: DeleteCommand<'WriteConcern>, ordered: bool) =
+        { state with ordered = Some ordered }
 
     [<CustomOperation("write_concern")>]
-    member __.WithWriteConcern(state: DeleteCommand<'WriteConcern>, concern: 'WriteConcern) =
-        { state with
-              writeConcern = Some concern }
+    member inline __.WithWriteConcern(state: DeleteCommand<'WriteConcern>, concern: 'WriteConcern) =
+        { state with writeConcern = Some concern }
 
 type InsertCommand<'TDocument, 'WriteConcern, 'Comment> =
     { insert: string
@@ -632,7 +634,10 @@ type InsertCommand<'TDocument, 'WriteConcern, 'Comment> =
 
 type InsertCommandBuilder(collection: string, serialize: SerializerFn) =
 
-    member __.Yield _ =
+    member val Collection: string = collection
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { insert = ""
           documents = Seq.empty
           ordered = None
@@ -640,8 +645,8 @@ type InsertCommandBuilder(collection: string, serialize: SerializerFn) =
           bypassDocumentValidation = None
           comment = None }
 
-    member __.Run(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>) =
-        serialize { state with insert = collection }
+    member inline this.Run(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>) =
+        this.Serialize { state with insert = this.Collection }
 
     /// <summary>
     ///  A sequence of documents that will be inserted
@@ -665,29 +670,35 @@ type InsertCommandBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("documents")>]
-    member __.WithDocuments(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, documents: seq<'TDocument>) =
+    member inline __.WithDocuments
+        (
+            state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>,
+            documents: seq<'TDocument>
+        ) =
         { state with documents = documents }
 
     [<CustomOperation("ordered")>]
-    member __.WithOrdered(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, ordered: bool) =
+    member inline __.WithOrdered(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, ordered: bool) =
         { state with ordered = Some ordered }
 
     [<CustomOperation("write_concern")>]
-    member __.WithWriteConcern(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, writeConcern: 'WriteConcern) =
-        { state with
-              writeConcern = Some writeConcern }
+    member inline __.WithWriteConcern
+        (
+            state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>,
+            writeConcern: 'WriteConcern
+        ) =
+        { state with writeConcern = Some writeConcern }
 
     [<CustomOperation("bypass_document_validation")>]
-    member __.WithBypassDocumentValidation
+    member inline __.WithBypassDocumentValidation
         (
             state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>,
             bypassDocumentValidation: bool
         ) =
-        { state with
-              bypassDocumentValidation = Some bypassDocumentValidation }
+        { state with bypassDocumentValidation = Some bypassDocumentValidation }
 
     [<CustomOperation("comment")>]
-    member __.WithComment(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, comment: 'Comment) =
+    member inline __.WithComment(state: InsertCommand<'TDocument, 'WriteConcern, 'Comment>, comment: 'Comment) =
         { state with comment = Some comment }
 
 type UpdateCommand<'WriteConcern, 'Comment> =
@@ -700,7 +711,10 @@ type UpdateCommand<'WriteConcern, 'Comment> =
 
 type UpdateCommandBuilder(collection: string, serialize: SerializerFn) =
 
-    member __.Yield _ =
+    member val Collection: string = collection
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { update = ""
           updates = Seq.empty
           ordered = None
@@ -708,8 +722,8 @@ type UpdateCommandBuilder(collection: string, serialize: SerializerFn) =
           bypassDocumentValidation = None
           comment = None }
 
-    member __.Run(state: UpdateCommand<'WriteConcern, 'Comment>) =
-        serialize { state with update = collection }
+    member inline this.Run(state: UpdateCommand<'WriteConcern, 'Comment>) =
+        this.Serialize { state with update = this.Collection }
 
 
     /// <summary>
@@ -726,7 +740,7 @@ type UpdateCommandBuilder(collection: string, serialize: SerializerFn) =
     ///     }
     /// </example>
     [<CustomOperation("updates")>]
-    member __.WithUpdates(state: UpdateCommand<'WriteConcern, 'Comment>, updates: seq<obj>) =
+    member inline __.WithUpdates(state: UpdateCommand<'WriteConcern, 'Comment>, updates: seq<obj>) =
         { state with updates = updates }
 
     /// <summary>
@@ -753,23 +767,21 @@ type UpdateCommandBuilder(collection: string, serialize: SerializerFn) =
         this.WithUpdates(state, updates |> Seq.map box)
 
     [<CustomOperation("ordered")>]
-    member __.WithOrdered(state: UpdateCommand<'WriteConcern, 'Comment>, ordered: bool) =
+    member inline __.WithOrdered(state: UpdateCommand<'WriteConcern, 'Comment>, ordered: bool) =
         { state with ordered = Some ordered }
 
     [<CustomOperation("write_concern")>]
-    member __.WithWriteConcern(state: UpdateCommand<'WriteConcern, 'Comment>, writeConcern: 'WriteConcern) =
-        { state with
-              writeConcern = Some writeConcern }
+    member inline __.WithWriteConcern(state: UpdateCommand<'WriteConcern, 'Comment>, writeConcern: 'WriteConcern) =
+        { state with writeConcern = Some writeConcern }
 
     [<CustomOperation("bypass_document_validation")>]
-    member __.WithBypassDocumentValidation
+    member inline __.WithBypassDocumentValidation
         (
             state: UpdateCommand<'WriteConcern, 'Comment>,
             bypassDocumentValidation: bool
         ) =
-        { state with
-              bypassDocumentValidation = Some bypassDocumentValidation }
+        { state with bypassDocumentValidation = Some bypassDocumentValidation }
 
     [<CustomOperation("comment")>]
-    member __.WithComment(state: UpdateCommand<'WriteConcern, 'Comment>, comment: 'Comment) =
+    member inline __.WithComment(state: UpdateCommand<'WriteConcern, 'Comment>, comment: 'Comment) =
         { state with comment = Some comment }

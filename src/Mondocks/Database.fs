@@ -42,7 +42,10 @@ type Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjecti
 
 type IndexBuilder(name: string, serialize: SerializerFn) =
 
-    member __.Yield _ =
+    member val Name = name
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { name = ""
           key = dict ([])
           background = None
@@ -64,11 +67,11 @@ type IndexBuilder(name: string, serialize: SerializerFn) =
           collation = None
           wildcardProjection = None }
 
-    member __.Run(state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>) =
-        serialize { state with name = name }
+    member inline this.Run(state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>) =
+        this.Serialize { state with name = this.Name }
 
     [<CustomOperation("key")>]
-    member __.Key
+    member inline __.Key
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             key: IDictionary<string, obj>
@@ -76,16 +79,15 @@ type IndexBuilder(name: string, serialize: SerializerFn) =
         { state with key = key }
 
     [<CustomOperation("background")>]
-    member __.Background
+    member inline __.Background
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             background: bool
         ) =
-        { state with
-              background = Some background }
+        { state with background = Some background }
 
     [<CustomOperation("unique")>]
-    member __.Unique
+    member inline __.Unique
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             unique: bool
@@ -93,16 +95,15 @@ type IndexBuilder(name: string, serialize: SerializerFn) =
         { state with unique = Some unique }
 
     [<CustomOperation("partial_filter_expression")>]
-    member __.PartialFilterExpression
+    member inline __.PartialFilterExpression
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             partialFilterExpression: 'PartialFilterExpression
         ) =
-        { state with
-              partialFilterExpression = Some partialFilterExpression }
+        { state with partialFilterExpression = Some partialFilterExpression }
 
     [<CustomOperation("sparse")>]
-    member __.Sparse
+    member inline __.Sparse
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             sparse: bool
@@ -110,16 +111,15 @@ type IndexBuilder(name: string, serialize: SerializerFn) =
         { state with sparse = Some sparse }
 
     [<CustomOperation("expire_after_seconds")>]
-    member __.ExpireAfterSeconds
+    member inline __.ExpireAfterSeconds
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             expireAfterSeconds: int
         ) =
-        { state with
-              expireAfterSeconds = Some expireAfterSeconds }
+        { state with expireAfterSeconds = Some expireAfterSeconds }
 
     [<CustomOperation("hidden")>]
-    member __.Hidden
+    member inline __.Hidden
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             hidden: bool
@@ -127,16 +127,15 @@ type IndexBuilder(name: string, serialize: SerializerFn) =
         { state with hidden = Some hidden }
 
     [<CustomOperation("storage_engine")>]
-    member __.StorageEngine
+    member inline __.StorageEngine
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             storageEngine: 'StorageEngine
         ) =
-        { state with
-              storageEngine = Some storageEngine }
+        { state with storageEngine = Some storageEngine }
 
     [<CustomOperation("weights")>]
-    member __.Weights
+    member inline __.Weights
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             weights: 'Weights
@@ -144,138 +143,149 @@ type IndexBuilder(name: string, serialize: SerializerFn) =
         { state with weights = Some weights }
 
     [<CustomOperation("default_language")>]
-    member __.DefaultLanguage
+    member inline __.DefaultLanguage
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             defaultLanguage: string
         ) =
-        { state with
-              default_language = Some defaultLanguage }
+        { state with default_language = Some defaultLanguage }
 
     [<CustomOperation("language_override")>]
-    member __.LanguageOverride
+    member inline __.LanguageOverride
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             languageOverride: string
         ) =
-        { state with
-              language_override = Some languageOverride }
+        { state with language_override = Some languageOverride }
 
     [<CustomOperation("text_index_version")>]
-    member __.TextIndexVersion
+    member inline __.TextIndexVersion
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             textIndexVersion: int
         ) =
-        { state with
-              textIndexVersion = Some textIndexVersion }
+        { state with textIndexVersion = Some textIndexVersion }
 
     [<CustomOperation("2d_sphere_index_version")>]
-    member __.``2dsphereIndexVersion``
+    member inline __.``2dsphereIndexVersion``
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             ``2dsphereIndexVersion``: int
         ) =
-        { state with
-              ``2dsphereIndexVersion`` = Some ``2dsphereIndexVersion`` }
+        { state with ``2dsphereIndexVersion`` = Some ``2dsphereIndexVersion`` }
 
     [<CustomOperation("bits")>]
-    member __.Bits(state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>, bits: int) =
+    member inline __.Bits
+        (
+            state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
+            bits: int
+        ) =
         { state with bits = Some bits }
 
     [<CustomOperation("min")>]
-    member __.Min(state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>, min: float) =
+    member inline __.Min
+        (
+            state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
+            min: float
+        ) =
         { state with min = Some min }
 
     [<CustomOperation("max")>]
-    member __.Max(state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>, max: float) =
+    member inline __.Max
+        (
+            state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
+            max: float
+        ) =
         { state with max = Some max }
 
     [<CustomOperation("bucket_size")>]
-    member __.BucketSize
+    member inline __.BucketSize
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             bucketSize: float
         ) =
-        { state with
-              bucketSize = Some bucketSize }
+        { state with bucketSize = Some bucketSize }
 
     [<CustomOperation("collation")>]
-    member __.Collation
+    member inline __.Collation
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             collation: Collation
         ) =
-        { state with
-              collation = Some collation }
+        { state with collation = Some collation }
 
     [<CustomOperation("wildcard_projection")>]
-    member __.WildcardProjection
+    member inline __.WildcardProjection
         (
             state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>,
             wildcardProjection: 'WildcardProjection
         ) =
-        { state with
-              wildcardProjection = Some wildcardProjection }
+        { state with wildcardProjection = Some wildcardProjection }
 
 type CreateIndexesBuilder(collection: string, serialize: SerializerFn) =
 
-    member __.Yield _ =
+    member val Collection: string = collection
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { createIndexes = ""
           indexes = Seq.empty
           writeConcern = None
           commitQuorum = None
           comment = None }
 
-    member __.Run(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>) =
-        serialize
-            { state with
-                  createIndexes = collection }
+    member inline this.Run(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>) =
+        this.Serialize { state with createIndexes = this.Collection }
 
     [<CustomOperation("indexes")>]
-    member __.Indexes
+    member inline __.Indexes
         (
             state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
             indexes: seq<'Index>
         ) =
-        { state with
-              indexes = indexes |> Seq.map box }
+        { state with indexes = indexes |> Seq.map box }
 
     [<CustomOperation("write_concern")>]
-    member __.WriteConcern
+    member inline __.WriteConcern
         (
             state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
             writeConcern: 'WriteConcern
         ) =
-        { state with
-              writeConcern = Some writeConcern }
+        { state with writeConcern = Some writeConcern }
 
     [<CustomOperation("commit_quorum")>]
-    member __.CommitQuorum
+    member inline __.CommitQuorum
         (
             state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
             commitQuorum: 'CommitQuorum
         ) =
-        { state with
-              commitQuorum = Some commitQuorum }
+        { state with commitQuorum = Some commitQuorum }
 
     [<CustomOperation("comment")>]
-    member __.Comment(state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>, comment: 'Comment) =
+    member inline __.Comment
+        (
+            state: CreateIndexesCommand<'Index, 'WriteConcern, 'CommitQuorum, 'Comment>,
+            comment: 'Comment
+        ) =
         { state with comment = Some comment }
 
 type DropIndexesBuilder(collection: string, serialize: SerializerFn) =
 
-    member __.Yield _ =
+    member val Collection: string = collection
+    member val Serialize: SerializerFn = serialize
+
+    member inline __.Yield _ =
         { dropIndexes = ""
           index = obj
           writeConcern = None
           comment = None }
 
-    member __.Run(state: DropIndexCommand<'WriteConcern, 'Comment>) =
-        serialize { state with dropIndexes = collection }
+    member inline this.Run(state: DropIndexCommand<'WriteConcern, 'Comment>) =
+        this.Serialize { state with dropIndexes = this.Collection }
 
     [<CustomOperation("index")>]
-    member __.Index(state: DropIndexCommand<'WriteConcern, 'Comment>, index: obj) = { state with index = box index }
+    member inline __.Index(state: DropIndexCommand<'WriteConcern, 'Comment>, index: obj) =
+        { state with index = box index }
 
     member this.Index(state: DropIndexCommand<'WriteConcern, 'Comment>, index: string) = this.Index(state, index |> box)
 
@@ -286,10 +296,9 @@ type DropIndexesBuilder(collection: string, serialize: SerializerFn) =
         this.Index(state, index |> box)
 
     [<CustomOperation("write_concern")>]
-    member __.WriteConcern(state: DropIndexCommand<'WriteConcern, 'Comment>, writeConcern: 'WriteConcern) =
-        { state with
-              writeConcern = Some writeConcern }
+    member inline __.WriteConcern(state: DropIndexCommand<'WriteConcern, 'Comment>, writeConcern: 'WriteConcern) =
+        { state with writeConcern = Some writeConcern }
 
     [<CustomOperation("comment")>]
-    member __.Comment(state: DropIndexCommand<'WriteConcern, 'Comment>, comment: 'Comment) =
+    member inline __.Comment(state: DropIndexCommand<'WriteConcern, 'Comment>, comment: 'Comment) =
         { state with comment = Some comment }
