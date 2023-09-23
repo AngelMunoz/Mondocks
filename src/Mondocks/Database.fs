@@ -68,7 +68,7 @@ type IndexBuilder(name: string, serialize: SerializerFn) =
           wildcardProjection = None }
 
     member inline this.Run(state: Index<'PartialFilterExpression, 'StorageEngine, 'Weights, 'WildcardProjection>) =
-        this.Serialize { state with name = this.Name }
+        { state with name = this.Name }
 
     [<CustomOperation("key")>]
     member inline __.Key

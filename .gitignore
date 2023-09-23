@@ -443,3 +443,6 @@ $RECYCLE.BIN/
 
 *.fs.js
 *.mjs
+
+# Direnv
+.envrc
