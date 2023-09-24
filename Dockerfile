@@ -11,7 +11,10 @@ ENV \
     # Enable correct mode for dotnet watch (only mode supported in a container)
     DOTNET_USE_POLLING_FILE_WATCHER=true \
     # Skip extraction of XML docs - generally not useful within an image/container - helps performance
-    NUGET_XMLDOC_MODE=skip
+    NUGET_XMLDOC_MODE=skip \
+    # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
+    DOTNET_CLI_TELEMETRY_OPTOUT=true
+
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
@@ -35,6 +38,7 @@ FROM jupyter/base-notebook:ubuntu-22.04
 
 ENV \
     DOTNET_RUNNING_IN_DOCKER=true \
+    ASPNETCORE_URLS= \
     # Do not generate certificate
     DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
     # Enable correct mode for dotnet watch (only mode supported in a container)
@@ -45,12 +49,6 @@ ENV \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true \
     # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
     DOTNET_CLI_TELEMETRY_OPTOUT=true
-
-ARG NB_USER=jovyan
-ARG NB_UID=1000
-ENV USER ${NB_USER}
-ENV NV_UID ${NB_UID}
-ENV HOME /home/${NB_USER}
 
 # Copy Notebooks
 COPY notebooks ${HOME}/notebooks
@@ -65,17 +63,16 @@ RUN chown -R ${NB_UID} ${HOME}
 USER ${NB_USER}
 
 # Install nteract
-RUN python3 -m pip install --no-cache-dir nteract-on-jupyter
+RUN mamba install --yes 'nteract-on-jupyter' \
+    && mamba clean --all -f -y
 
 # Install lastest build from master branch of Microsoft.DotNet.Interactive
 # RUN dotnet tool install -g Microsoft.dotnet-interactive --add-source "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json"
 
-#latest stable from nuget.org
+# Latest stable for net6.0 from nuget.org
 RUN dotnet tool install -g Microsoft.dotnet-interactive --version 1.0.355307
-#RUN dotnet tool install -g Microsoft.dotnet-interactive --add-source "https://api.nuget.org/v3/index.json"
 
 ENV PATH="${PATH}:${HOME}/.dotnet/tools"
-RUN echo "$PATH"
 
 # Install kernel specs
 RUN dotnet interactive jupyter install
