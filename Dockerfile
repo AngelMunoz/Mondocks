@@ -33,7 +33,7 @@ ENV \
     # Otherwise, dotnet-interactive expects some cultural-specific data, which entails installing `libicu`
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true \
     # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
-    DOTNET_INTERACTIVE_CLI_TELEMETRY_OPTOUT=true
+    DOTNET_CLI_TELEMETRY_OPTOUT=true
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
@@ -60,7 +60,7 @@ RUN python3 -m pip install --no-cache-dir nteract-on-jupyter
 # RUN dotnet tool install -g Microsoft.dotnet-interactive --add-source "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json"
 
 #latest stable from nuget.org
-RUN dotnet tool install -g Microsoft.dotnet-interactive --version 1.0.446104
+RUN dotnet tool install -g Microsoft.dotnet-interactive --version 1.0.355307
 #RUN dotnet tool install -g Microsoft.dotnet-interactive --add-source "https://api.nuget.org/v3/index.json"
 
 ENV PATH="${PATH}:${HOME}/.dotnet/tools"
@@ -70,7 +70,7 @@ RUN echo "$PATH"
 RUN dotnet interactive jupyter install
 
 # Enable telemetry once we install jupyter for the image
-ENV DOTNET_INTERACTIVE_CLI_TELEMETRY_OPTOUT=false
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=false
 
 # Set root to notebooks
 WORKDIR ${HOME}/notebooks/
