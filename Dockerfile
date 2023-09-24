@@ -62,10 +62,6 @@ RUN ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet
 RUN chown -R ${NB_UID} ${HOME} 
 USER ${NB_USER}
 
-# Install nteract
-RUN mamba install --yes 'nteract-on-jupyter' \
-    && mamba clean --all -f -y
-
 # Install lastest build from master branch of Microsoft.DotNet.Interactive
 # RUN dotnet tool install -g Microsoft.dotnet-interactive --add-source "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json"
 
