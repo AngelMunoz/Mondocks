@@ -26,6 +26,14 @@ RUN curl -fSL --output dotnet.tar.gz https://dotnetcli.azureedge.net/dotnet/Sdk/
 
 FROM jupyter/base-notebook:ubuntu-22.04
 
+ENV \
+    DOTNET_RUNNING_IN_DOCKER=true \
+    DOTNET_USER_POLLING_FILE_WATCHER=true \
+    NUGET_XMLDOC_MODE=skip \
+    # Otherwise, dotnet-interactive expects some cultural-specific data, which entails installing `libicu`
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true \
+    # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
+    DOTNET_INTERACTIVE_CLI_TELEMETRY_OPTOUT=true
 
 ARG NB_USER=jovyan
 ARG NB_UID=1000
@@ -50,13 +58,6 @@ RUN python3 -m pip install --no-cache-dir nteract-on-jupyter
 
 # Install lastest build from master branch of Microsoft.DotNet.Interactive
 # RUN dotnet tool install -g Microsoft.dotnet-interactive --add-source "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json"
-
-ENV \
-    DOTNET_RUNNING_IN_DOCKER=true \
-    DOTNET_USER_POLLING_FILE_WATCHER=true \
-    NUGET_XMLDOC_MODE=skip \
-    # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
-    DOTNET_INTERACTIVE_CLI_TELEMETRY_OPTOUT=true
 
 #latest stable from nuget.org
 RUN dotnet tool install -g Microsoft.dotnet-interactive --version 1.0.446104
