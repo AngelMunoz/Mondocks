@@ -1,9 +1,16 @@
-ARG REPO=mcr.microsoft.com/dotnet/runtime
+ARG REPO=mcr.microsoft.com/dotnet/aspnet
 FROM $REPO:6.0.22-jammy-amd64 AS dotnet-cli
 
 ENV \
+    # Unset ASPNETCORE_URLS from base image
+    ASPNETCORE_URLS= \
+    # Do not generate certificate
+    DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
+    # SDK version
     DOTNET_SDK_VERSION=6.0.414 \
+    # Enable correct mode for dotnet watch (only mode supported in a container)
     DOTNET_USE_POLLING_FILE_WATCHER=true \
+    # Skip extraction of XML docs - generally not useful within an image/container - helps performance
     NUGET_XMLDOC_MODE=skip
 
 RUN apt-get update \
@@ -28,9 +35,13 @@ FROM jupyter/base-notebook:ubuntu-22.04
 
 ENV \
     DOTNET_RUNNING_IN_DOCKER=true \
+    # Do not generate certificate
+    DOTNET_GENERATE_ASPNET_CERTIFICATE=false \
+    # Enable correct mode for dotnet watch (only mode supported in a container)
     DOTNET_USER_POLLING_FILE_WATCHER=true \
+    # Skip extraction of XML docs - generally not useful within an image/container - helps performance
     NUGET_XMLDOC_MODE=skip \
-    # Otherwise, dotnet-interactive expects some cultural-specific data, which entails installing `libicu`
+    # `dotnet-interactive` expects some cultural-specific data, which entails installing `libicu`
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true \
     # Opt out of telemetry until after we install jupyter when building the image, this prevents caching of machine id
     DOTNET_CLI_TELEMETRY_OPTOUT=true
